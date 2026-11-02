@@ -3,7 +3,7 @@
  * Simulates depositing funds from external banking rails into PayBuddy wallet
  */
 
-const { v4: uuidv4 } = require('crypto');
+const crypto = require('crypto');
 const { withTransaction } = require('../config/database');
 const WalletRepository = require('../repositories/wallet.repository');
 const TransactionRepository = require('../repositories/transaction.repository');
@@ -67,7 +67,7 @@ const FundingService = {
       await WalletRepository.updateBalance(lockedWallet.id, newBalanceDecimal, connection);
 
       // 4. Record Funding Transaction
-      const txId = `pb_tx_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+      const txId = `pb_tx_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
       const reference = generateFundingUTR();
 
       await TransactionRepository.create({
@@ -83,7 +83,7 @@ const FundingService = {
       }, connection);
 
       // 5. Create Double-Entry Ledger Record (CREDIT to Wallet)
-      const ledgerId = `pb_led_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+      const ledgerId = `pb_led_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
       await LedgerRepository.createEntry({
         id: ledgerId,
         transactionId: txId,

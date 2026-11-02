@@ -4,7 +4,7 @@
  */
 
 const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('crypto');
+const crypto = require('crypto');
 const mysql = require('mysql2/promise');
 const config = require('../config/env');
 const logger = require('../utils/logger');

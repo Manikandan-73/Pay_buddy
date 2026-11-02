@@ -4,7 +4,6 @@
  */
 
 const crypto = require('crypto');
-const { v4: uuidv4 } = require('crypto');
 const db = require('../config/database');
 const config = require('../config/env');
 const { AppError } = require('./errorHandler');
@@ -67,7 +66,7 @@ function idempotency(operationName) {
       }
 
       // 2. Reserve idempotency key in DB with IN_PROGRESS status
-      const recordId = `pb_idemp_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+      const recordId = `pb_idemp_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
       const expiresAt = new Date(Date.now() + config.idempotency.ttlSeconds * 1000);
 
       const sqlInsert = `

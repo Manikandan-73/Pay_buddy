@@ -3,7 +3,7 @@
  * Production-grade financial transaction processing with deterministic locking and deadlock retry
  */
 
-const { v4: uuidv4 } = require('crypto');
+const crypto = require('crypto');
 const { withTransaction } = require('../config/database');
 const WalletRepository = require('../repositories/wallet.repository');
 const TransactionRepository = require('../repositories/transaction.repository');
@@ -105,7 +105,7 @@ const TransferService = {
           await WalletRepository.updateBalance(lockedReceiver.id, newReceiverDecimal, connection);
 
           // STEP 5E: Record Completed Transaction
-          const txId = `pb_tx_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+          const txId = `pb_tx_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
           const reference = generateUTR();
           const amountDecimal = toDecimalString(amountInPaise);
 
@@ -122,7 +122,7 @@ const TransferService = {
           }, connection);
 
           // STEP 5F: Write Balanced Double-Entry Ledger Records
-          const debitLedgerId = `pb_led_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+          const debitLedgerId = `pb_led_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
           await LedgerRepository.createEntry({
             id: debitLedgerId,
             transactionId: txId,
@@ -133,7 +133,7 @@ const TransferService = {
             description: `P2P Transfer to ${lockedReceiver.id}`
           }, connection);
 
-          const creditLedgerId = `pb_led_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+          const creditLedgerId = `pb_led_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
           await LedgerRepository.createEntry({
             id: creditLedgerId,
             transactionId: txId,

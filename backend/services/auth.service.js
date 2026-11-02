@@ -4,7 +4,7 @@
  */
 
 const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('crypto');
+const crypto = require('crypto');
 const { withTransaction } = require('../config/database');
 const UserRepository = require('../repositories/user.repository');
 const WalletRepository = require('../repositories/wallet.repository');
@@ -29,8 +29,8 @@ const AuthService = {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const userId = `pb_usr_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
-    const walletId = `pb_wal_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
+    const userId = `pb_usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
+    const walletId = `pb_wal_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
 
     // 4. Atomic MySQL Transaction: Create User + Provision MAIN Wallet
     await withTransaction(async (connection) => {
