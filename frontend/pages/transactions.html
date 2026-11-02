@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction History — PayBuddy</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .filter-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .filter-tab {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-tab.active {
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border-color: var(--color-primary);
+    }
+    /* Modal Backdrop */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+    .modal-sheet {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      max-width: 440px;
+      width: 100%;
+      padding: var(--space-6);
+      box-shadow: var(--shadow-lg);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="flex items-center gap-2">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <span class="text-md font-bold">Transaction History</span>
+    </div>
+    <span class="brand-badge">Audit Ledger</span>
+  </header>
+
+  <main class="wallet-shell">
+    <div class="px-4 py-4 flex-1">
+      
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button type="button" class="filter-tab active" data-filter="ALL">All Transactions</button>
+        <button type="button" class="filter-tab" data-filter="CREDIT">Credits (+)</button>
+        <button type="button" class="filter-tab" data-filter="DEBIT">Debits (-)</button>
+        <button type="button" class="filter-tab" data-filter="TOPUP">Top-Ups</button>
+      </div>
+
+      <!-- Transaction List -->
+      <div class="card" id="history-container">
+        <div class="text-center py-6 text-muted text-sm">Loading transaction history...</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Digital Receipt & Ledger Modal -->
+  <div class="modal-overlay" id="receipt-modal">
+    <div class="modal-sheet">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-xs font-bold text-muted">PAYBUDDY OFFICIAL RECEIPT</span>
+        <button type="button" id="btn-close-modal" class="btn btn-ghost btn-sm">✕</button>
+      </div>
+
+      <div class="text-center mb-4">
+        <div class="text-xs text-muted" id="modal-status-badge">SUCCESS</div>
+        <div class="text-3xl font-bold mt-1" id="modal-amount">₹ 0.00</div>
+        <div class="text-xs text-muted mt-1" id="modal-utr">UTR: -</div>
+      </div>
+
+      <div class="card mb-4" style="background: var(--color-surface-subtle);">
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Sender</span>
+          <span class="font-semibold" id="modal-sender">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Receiver</span>
+          <span class="font-semibold" id="modal-receiver">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Timestamp</span>
+          <span id="modal-timestamp">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs">
+          <span class="text-muted">Type</span>
+          <span class="font-semibold" id="modal-type">-</span>
+        </div>
+      </div>
+
+      <!-- Immutable Double-Entry Ledger Verification -->
+      <div class="mb-4">
+        <span class="text-xs font-bold text-muted">DOUBLE-ENTRY LEDGER AUDIT LOG</span>
+        <div id="modal-ledger-entries" class="mt-2 text-xs flex flex-col gap-1">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-block btn-md" onclick="window.print()">
+        Print Receipt
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="../js/transactions.js"></script>
+</body>
+</html>

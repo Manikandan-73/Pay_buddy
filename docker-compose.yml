@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: paybuddy_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: paybuddy_root_secret
+      MYSQL_DATABASE: paybuddy_db
+      MYSQL_USER: paybuddy_user
+      MYSQL_PASSWORD: paybuddy_password
+    ports:
+      # Map container 3306 to host 3307 to avoid collisions with local host MySQL
+      - "3307:3306"
+    volumes:
+      - paybuddy_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "paybuddy_user", "-ppaybuddy_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - paybuddy_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: paybuddy_backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      API_PREFIX: /api/v1
+      CORS_ORIGIN: "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500"
+      JWT_SECRET: paybuddy_docker_production_grade_jwt_secret_32_characters!
+      JWT_EXPIRES_IN: 15m
+      REFRESH_TOKEN_SECRET: paybuddy_docker_production_refresh_jwt_secret_32_chars!
+      REFRESH_TOKEN_EXPIRES_IN: 7d
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: paybuddy_user
+      DB_PASSWORD: paybuddy_password
+      DB_NAME: paybuddy_db
+      DB_CONNECTION_LIMIT: 10
+      IDEMPOTENCY_TTL_SECONDS: 86400
+    ports:
+      - "5000:5000"
+    networks:
+      - paybuddy_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: paybuddy_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - paybuddy_network
+
+volumes:
+  paybuddy_mysql_data:
+    driver: local
+
+networks:
+  paybuddy_network:
+    driver: bridge

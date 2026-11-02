@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money — PayBuddy</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .recipient-preview {
+      display: none;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-top: var(--space-3);
+      border: 1px solid var(--color-border);
+    }
+    .amount-chips {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .amount-chip {
+      background: var(--color-surface-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .amount-chip:hover {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    .receipt-card {
+      display: none;
+      text-align: center;
+      padding: var(--space-6) var(--space-4);
+    }
+    .success-check-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--color-success-light);
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-4);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="flex items-center gap-2">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <span class="text-md font-bold">Send Money</span>
+    </div>
+    <span class="badge badge-success">UPI Instant</span>
+  </header>
+
+  <main class="wallet-shell">
+    <div class="px-4 py-4 flex-1" id="transfer-flow-container">
+
+      <!-- Step 1: Find Recipient -->
+      <div class="card mb-4">
+        <label class="form-label" for="recipient-query">Pay To (Mobile / Email / Wallet ID)</label>
+        <div class="flex gap-2 mt-1">
+          <input type="text" id="recipient-query" class="form-input" placeholder="e.g. bob@paybuddy.local or +919876543211">
+          <button type="button" id="btn-lookup" class="btn btn-primary btn-md">Find</button>
+        </div>
+
+        <!-- Verified Recipient Box -->
+        <div id="recipient-preview-box" class="recipient-preview">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="transaction-avatar" id="rec-avatar">B</div>
+              <div>
+                <div class="text-sm font-bold" id="rec-name">Bob Smith</div>
+                <div class="text-xs text-muted" id="rec-meta">bob@paybuddy.local</div>
+              </div>
+            </div>
+            <span class="badge badge-success">Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Amount Input -->
+      <div class="card mb-4" id="amount-card" style="opacity: 0.5; pointer-events: none;">
+        <label class="form-label">Enter Transfer Amount</label>
+        <div class="amount-input-box mt-2">
+          <span class="amount-symbol">₹</span>
+          <input type="number" id="transfer-amount" class="amount-field" placeholder="0" min="1" step="any">
+        </div>
+
+        <!-- Fast Chips -->
+        <div class="amount-chips">
+          <button type="button" class="amount-chip" data-amount="100">+ ₹100</button>
+          <button type="button" class="amount-chip" data-amount="500">+ ₹500</button>
+          <button type="button" class="amount-chip" data-amount="1000">+ ₹1,000</button>
+          <button type="button" class="amount-chip" data-amount="2000">+ ₹2,000</button>
+        </div>
+      </div>
+
+      <!-- Sender Balance Indicator -->
+      <div class="flex justify-between items-center text-xs text-muted px-2 mb-6">
+        <span>Debiting: Primary INR Wallet</span>
+        <span id="available-balance-hint">Available: Loading...</span>
+      </div>
+
+      <!-- Submit CTA -->
+      <button type="button" id="btn-send-transfer" class="btn btn-primary btn-block btn-lg" disabled>
+        Proceed to Pay
+      </button>
+    </div>
+
+    <!-- Step 3: Success Digital Receipt Screen -->
+    <div id="receipt-container" class="receipt-card">
+      <div class="success-check-circle">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-success mb-1">Payment Successful</h2>
+      <div class="text-4xl font-bold mb-4" id="receipt-amount">₹ 0.00</div>
+
+      <div class="card text-left mb-6" style="background: var(--color-surface-subtle);">
+        <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-xs text-muted">Paid To</span>
+          <span class="text-sm font-semibold" id="receipt-receiver-name">-</span>
+        </div>
+        <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-xs text-muted">UPI UTR Reference</span>
+          <span class="text-sm font-mono font-semibold" id="receipt-utr">-</span>
+        </div>
+        <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-xs text-muted">Timestamp</span>
+          <span class="text-xs" id="receipt-time">-</span>
+        </div>
+        <div class="flex justify-between py-2">
+          <span class="text-xs text-muted">Convenience Fee</span>
+          <span class="text-xs font-semibold text-success">FREE (₹0.00)</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-block btn-lg" onclick="window.location.href='dashboard.html'">
+        Done
+      </button>
+    </div>
+  </main>
+
+  <script type="module" src="../js/send-money.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Money — PayBuddy</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .payment-option-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+    .payment-option-card.selected {
+      border-color: var(--color-primary);
+      background-color: var(--color-primary-light);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="flex items-center gap-2">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <span class="text-md font-bold">Add Money</span>
+    </div>
+    <span class="badge badge-warning">Simulated Gateway</span>
+  </header>
+
+  <main class="wallet-shell">
+    <div class="px-4 py-4 flex-1">
+      
+      <div class="alert alert-warning">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>This is a simulated gateway. No real bank accounts or cards are charged.</span>
+      </div>
+
+      <!-- Amount Input -->
+      <div class="card mb-4">
+        <label class="form-label">Top-Up Amount</label>
+        <div class="amount-input-box mt-2">
+          <span class="amount-symbol">₹</span>
+          <input type="number" id="topup-amount" class="amount-field" placeholder="1000" min="1" step="any" value="1000">
+        </div>
+
+        <div class="amount-chips mt-3">
+          <button type="button" class="amount-chip" data-amount="500">+ ₹500</button>
+          <button type="button" class="amount-chip" data-amount="1000">+ ₹1,000</button>
+          <button type="button" class="amount-chip" data-amount="2000">+ ₹2,000</button>
+          <button type="button" class="amount-chip" data-amount="5000">+ ₹5,000</button>
+        </div>
+      </div>
+
+      <!-- Simulated Payment Methods -->
+      <div class="card mb-6">
+        <label class="form-label mb-2">Select Simulated Payment Channel</label>
+        
+        <div class="payment-option-card selected" data-method="SIMULATED_UPI">
+          <div class="flex items-center gap-3">
+            <span class="text-lg">⚡</span>
+            <div>
+              <div class="text-sm font-semibold">Simulated Fast UPI</div>
+              <div class="text-xs text-muted">Instant credit from simulated bank account</div>
+            </div>
+          </div>
+          <input type="radio" name="pay-method" checked>
+        </div>
+
+        <div class="payment-option-card" data-method="SIMULATED_NETBANKING">
+          <div class="flex items-center gap-3">
+            <span class="text-lg">🏦</span>
+            <div>
+              <div class="text-sm font-semibold">Simulated NetBanking</div>
+              <div class="text-xs text-muted">Simulate clearing house wire</div>
+            </div>
+          </div>
+          <input type="radio" name="pay-method">
+        </div>
+
+        <div class="payment-option-card" data-method="SIMULATE_FAILURE">
+          <div class="flex items-center gap-3">
+            <span class="text-lg">⚠️</span>
+            <div>
+              <div class="text-sm font-semibold text-error">Simulate Gateway Error</div>
+              <div class="text-xs text-muted">Test bank refusal & rollback handling</div>
+            </div>
+          </div>
+          <input type="radio" name="pay-method">
+        </div>
+      </div>
+
+      <button type="button" id="btn-topup" class="btn btn-primary btn-block btn-lg">
+        Add Funds to Wallet
+      </button>
+    </div>
+  </main>
+
+  <script type="module" src="../js/add-money.js"></script>
+</body>
+</html>

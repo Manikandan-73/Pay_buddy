@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — PayBuddy</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .auth-container {
+      max-width: 420px;
+      margin: var(--space-8) auto;
+      padding: var(--space-6);
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+    }
+    .demo-accounts {
+      margin-top: var(--space-6);
+      padding-top: var(--space-4);
+      border-top: 1px dashed var(--color-border);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="../index.html" class="brand-logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="6" fill="#5F259F"/>
+        <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
+        <path d="M7 13H11V18H7V13Z" fill="white"/>
+      </svg>
+      PayBuddy
+    </a>
+    <a href="register.html" class="btn btn-ghost btn-sm">Create Account</a>
+  </header>
+
+  <main class="app-container">
+    <div class="auth-container">
+      <h1 class="text-2xl font-bold mb-1">Welcome back</h1>
+      <p class="text-secondary text-sm mb-6">Enter your credentials to access your PayBuddy wallet.</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="email">Email or Phone</label>
+          <input type="text" id="email" class="form-input" placeholder="e.g. alice@paybuddy.local" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="btn-submit" class="btn btn-primary btn-block btn-lg mt-4">
+          Log In
+        </button>
+      </form>
+
+      <!-- Quick Fill Demo Accounts -->
+      <div class="demo-accounts">
+        <span class="text-xs font-semibold text-muted">QUICK DEMO ACCOUNTS</span>
+        <div class="flex flex-col gap-2 mt-2">
+          <button type="button" class="btn btn-ghost btn-sm text-brand" id="fill-alice" style="justify-content: flex-start;">
+            👤 Alice Johnson (alice@paybuddy.local)
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm text-brand" id="fill-bob" style="justify-content: flex-start;">
+            👤 Bob Smith (bob@paybuddy.local)
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm text-brand" id="fill-charlie" style="justify-content: flex-start;">
+            👤 Charlie Brown (charlie@paybuddy.local)
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile — PayBuddy</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="flex items-center gap-2">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <span class="text-md font-bold">Account Profile</span>
+    </div>
+    <span class="badge badge-success">KYC Verified</span>
+  </header>
+
+  <main class="wallet-shell">
+    <div class="px-4 py-6 flex-1">
+      
+      <!-- User Avatar & Identity Header -->
+      <div class="text-center mb-6">
+        <div class="transaction-avatar" id="profile-avatar" style="width: 72px; height: 72px; font-size: 1.5rem; margin: 0 auto var(--space-3);">
+          U
+        </div>
+        <h2 class="text-xl font-bold" id="profile-name">Loading...</h2>
+        <p class="text-xs text-muted" id="profile-id">ID: ...</p>
+      </div>
+
+      <!-- Contact Details Card -->
+      <div class="card mb-4">
+        <span class="text-xs font-bold text-muted">CONTACT INFORMATION</span>
+        <div class="flex justify-between py-2 mt-2 text-sm" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Email</span>
+          <span class="font-medium" id="profile-email">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-sm">
+          <span class="text-muted">Mobile</span>
+          <span class="font-medium" id="profile-phone">-</span>
+        </div>
+      </div>
+
+      <!-- Primary Wallet Status Card -->
+      <div class="card mb-6">
+        <span class="text-xs font-bold text-muted">PRIMARY DIGITAL WALLET</span>
+        <div class="flex justify-between py-2 mt-2 text-sm" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Wallet ID</span>
+          <span class="font-mono text-xs font-semibold" id="profile-wallet-id">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-sm" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Currency</span>
+          <span class="font-semibold">INR (₹)</span>
+        </div>
+        <div class="flex justify-between py-2 text-sm">
+          <span class="text-muted">Balance Snapshot</span>
+          <span class="font-bold text-brand" id="profile-balance">₹ 0.00</span>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <button type="button" id="btn-logout" class="btn btn-outline btn-block btn-lg" style="color: var(--color-error); border-color: var(--color-error);">
+        Log Out of PayBuddy
+      </button>
+    </div>
+  </main>
+
+  <script type="module">
+    import { apiRequest } from '../js/api.js';
+    import { requireAuth, clearSession } from '../js/auth.js';
+    import { showToast } from '../js/utils.js';
+
+    requireAuth();
+
+    async function loadProfile() {
+      try {
+        const res = await apiRequest('/auth/me');
+        const user = res.data;
+
+        document.getElementById('profile-name').textContent = user.fullName;
+        document.getElementById('profile-id').textContent = `User ID: ${user.id}`;
+        document.getElementById('profile-email').textContent = user.email;
+        document.getElementById('profile-phone').textContent = user.phone;
+        document.getElementById('profile-avatar').textContent = user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2);
+
+        if (user.primaryWallet) {
+          document.getElementById('profile-wallet-id').textContent = user.primaryWallet.id;
+          document.getElementById('profile-balance').textContent = `₹ ${parseFloat(user.primaryWallet.balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        }
+      } catch (err) {
+        showToast('Failed to load profile details.', 'error');
+      }
+    }
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      clearSession();
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
