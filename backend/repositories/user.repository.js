@@ -16,12 +16,30 @@ const UserRepository = {
   },
 
   async findByPhone(phone, connection = null) {
-    const sql = 'SELECT * FROM users WHERE phone = ? LIMIT 1';
+    const raw = String(phone).trim();
+    const digits = raw.replace(/[^0-9]/g, '');
+    const last10 = digits.slice(-10);
+    const variants = Array.from(new Set([raw, `+${digits}`, `+91${last10}`, last10, `+91 ${last10}`]));
+
+    const placeholders = variants.map(() => '?').join(', ');
+    const sql = `SELECT * FROM users WHERE phone IN (${placeholders}) LIMIT 1`;
     if (connection) {
-      const [rows] = await connection.execute(sql, [phone]);
+      const [rows] = await connection.execute(sql, variants);
       return rows[0] || null;
     }
-    const rows = await db.query(sql, [phone]);
+    const rows = await db.query(sql, variants);
+    return rows[0] || null;
+  },
+
+  async findByName(name, connection = null) {
+    const clean = String(name).trim().toLowerCase();
+    const sql = 'SELECT * FROM users WHERE LOWER(full_name) = ? OR LOWER(full_name) LIKE ? LIMIT 1';
+    const params = [clean, `%${clean}%`];
+    if (connection) {
+      const [rows] = await connection.execute(sql, params);
+      return rows[0] || null;
+    }
+    const rows = await db.query(sql, params);
     return rows[0] || null;
   },
 

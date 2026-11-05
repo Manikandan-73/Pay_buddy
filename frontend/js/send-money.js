@@ -35,11 +35,24 @@ async function initWallet() {
   try {
     const res = await apiRequest('/wallets/primary');
     userWallet = res.data;
-    balanceHint.textContent = `Available: ₹${parseFloat(userWallet.balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    const balanceNum = parseFloat(userWallet.balance);
+    balanceHint.textContent = `Available: ₹${balanceNum.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+    if (balanceNum <= 0) {
+      balanceHint.innerHTML = `Available: <span class="text-error font-bold">₹0.00</span> — <a href="add-money.html" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">Add Money First</a>`;
+    }
   } catch (err) {
     showToast('Failed to load wallet: ' + err.message, 'error');
   }
 }
+
+// Quick contact click handler
+document.querySelectorAll('.quick-contact-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    inputQuery.value = btn.dataset.contact;
+    lookupRecipient();
+  });
+});
 
 // Recipient Lookup
 async function lookupRecipient() {
@@ -107,7 +120,7 @@ btnSend.addEventListener('click', async () => {
   }
 
   if (amount > parseFloat(userWallet.balance)) {
-    showToast('Insufficient wallet balance.', 'error');
+    showToast(`Insufficient balance (Available: ₹${parseFloat(userWallet.balance).toFixed(2)}). Please Add Money first!`, 'error');
     return;
   }
 

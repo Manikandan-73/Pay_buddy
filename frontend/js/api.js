@@ -38,7 +38,7 @@ export async function apiRequest(endpoint, options = {}) {
       localStorage.removeItem('paybuddy_user');
       showToast('Your session has expired. Please log in again.', 'error');
       setTimeout(() => {
-        window.location.href = '/frontend/pages/login.html';
+        window.location.href = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
       }, 1000);
       throw new Error('Unauthorized');
     }

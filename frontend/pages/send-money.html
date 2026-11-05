@@ -77,8 +77,18 @@
       <div class="card mb-4">
         <label class="form-label" for="recipient-query">Pay To (Mobile / Email / Wallet ID)</label>
         <div class="flex gap-2 mt-1">
-          <input type="text" id="recipient-query" class="form-input" placeholder="e.g. bob@paybuddy.local or +919876543211">
+          <input type="text" id="recipient-query" class="form-input" placeholder="e.g. bob@paybuddy.local or 9876543211">
           <button type="button" id="btn-lookup" class="btn btn-primary btn-md">Find</button>
+        </div>
+
+        <!-- Quick Demo Contacts -->
+        <div class="mt-2 pt-2" style="border-top: 1px dashed var(--color-border);">
+          <span class="text-xs text-muted font-medium">Quick Contacts:</span>
+          <div class="flex gap-1 mt-1 flex-wrap" id="quick-contacts">
+            <button type="button" class="btn btn-ghost btn-sm text-brand quick-contact-btn" data-contact="bob@paybuddy.local">👤 Bob</button>
+            <button type="button" class="btn btn-ghost btn-sm text-brand quick-contact-btn" data-contact="alice@paybuddy.local">👤 Alice</button>
+            <button type="button" class="btn btn-ghost btn-sm text-brand quick-contact-btn" data-contact="charlie@paybuddy.local">👤 Charlie</button>
+          </div>
         </div>
 
         <!-- Verified Recipient Box -->

@@ -52,10 +52,13 @@ const WalletService = {
         targetUser = await UserRepository.findById(targetWallet.user_id);
       }
     } else {
-      // Look up by Email or Phone
+      // Look up by Email, Phone, or Name
       targetUser = await UserRepository.findByEmail(clean);
       if (!targetUser) {
         targetUser = await UserRepository.findByPhone(clean);
+      }
+      if (!targetUser) {
+        targetUser = await UserRepository.findByName(clean);
       }
       if (targetUser) {
         targetWallet = await WalletRepository.findPrimaryByUserId(targetUser.id);

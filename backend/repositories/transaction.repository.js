@@ -6,6 +6,10 @@ const db = require('../config/database');
 
 const TransactionRepository = {
   async create(tx, connection) {
+    const formattedCompletedAt = tx.completedAt instanceof Date
+      ? tx.completedAt.toISOString().slice(0, 19).replace('T', ' ')
+      : (tx.completedAt || null);
+
     const sql = `
       INSERT INTO transactions 
       (id, reference, sender_wallet_id, receiver_wallet_id, amount, currency, transaction_type, status, failure_reason, completed_at)
@@ -21,7 +25,7 @@ const TransactionRepository = {
       tx.transactionType,
       tx.status || 'PENDING',
       tx.failureReason || null,
-      tx.completedAt || null
+      formattedCompletedAt
     ]);
     return tx;
   },

@@ -79,8 +79,8 @@ const TransferService = {
             throw new AppError('Receiver wallet does not exist.', 404, 'RECEIVER_NOT_FOUND');
           }
 
-          if (lockedSender.status !== 'ACTIVE') {
-            throw new AppError('Sender wallet is suspended.', 403, 'SENDER_WALLET_INACTIVE');
+          if (!lockedSender || lockedSender.status !== 'ACTIVE') {
+            throw new AppError('Sender wallet is suspended or unavailable.', 403, 'SENDER_WALLET_INACTIVE');
           }
 
           if (lockedReceiver.status !== 'ACTIVE') {

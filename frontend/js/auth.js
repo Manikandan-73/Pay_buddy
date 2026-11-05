@@ -36,7 +36,7 @@ export function clearSession() {
   localStorage.removeItem('paybuddy_refresh_token');
   localStorage.removeItem('paybuddy_user');
   localStorage.removeItem('paybuddy_wallet');
-  window.location.href = '/frontend/pages/login.html';
+  window.location.href = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
 }
 
 /**
@@ -44,7 +44,7 @@ export function clearSession() {
  */
 export function requireAuth() {
   if (!isAuthenticated()) {
-    window.location.href = '/frontend/pages/login.html';
+    window.location.href = window.location.pathname.includes('/pages/') ? 'login.html' : 'pages/login.html';
   }
 }
 
@@ -53,6 +53,6 @@ export function requireAuth() {
  */
 export function requireGuest() {
   if (isAuthenticated()) {
-    window.location.href = '/frontend/pages/dashboard.html';
+    window.location.href = window.location.pathname.includes('/pages/') ? 'dashboard.html' : 'pages/dashboard.html';
   }
 }

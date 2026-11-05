@@ -82,12 +82,13 @@ function idempotency(operationName) {
         // Asynchronously update idempotency key record upon completion
         const status = res.statusCode >= 200 && res.statusCode < 300 ? 'COMPLETED' : 'FAILED';
         const txId = body?.data?.transaction?.id || body?.data?.id || null;
+        const serializedBody = body !== undefined ? JSON.stringify(body) : '{}';
 
         db.query(`
           UPDATE idempotency_keys 
           SET processing_status = ?, response_status = ?, response_body = ?, transaction_id = ?
           WHERE id = ?
-        `, [status, res.statusCode, JSON.stringify(body), txId, recordId]).catch(err => {
+        `, [status, res.statusCode || 200, serializedBody, txId, recordId]).catch(err => {
           console.error('Failed to update idempotency key cache:', err.message);
         });
 

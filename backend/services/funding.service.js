@@ -30,8 +30,9 @@ function generateFundingUTR() {
 
 const FundingService = {
   async fundWallet({ userId, amount, paymentMethod = 'SIMULATED_UPI', simulateFailure = false }) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new AppError('Simulated funding is disabled in production environments.', 403, 'SIMULATED_FUNDING_FORBIDDEN');
+    // Only block if explicitly disabled via environment variable
+    if (process.env.ENABLE_SIMULATED_FUNDING === 'false') {
+      throw new AppError('Simulated funding is disabled by policy.', 403, 'SIMULATED_FUNDING_FORBIDDEN');
     }
 
     const amountInPaise = toMinorUnits(amount);
