@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Money — PayBuddy</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/animations.css">
@@ -38,6 +44,11 @@
       justify-content: center;
       font-size: 1.25rem;
     }
+    .topup-receipt {
+      display: none;
+      text-align: center;
+      padding: var(--space-6) var(--space-4);
+    }
   </style>
 </head>
 <body>
@@ -57,7 +68,7 @@
   </header>
 
   <main class="wallet-shell page-enter">
-    <div class="px-4 py-4 flex-1">
+    <div class="px-4 py-4 flex-1" id="topup-form-container">
       
       <div class="alert alert-warning">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,7 +76,13 @@
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        <span class="text-xs">Development Gateway: Instant credit from simulated bank clearing rails.</span>
+        <span class="text-xs">Sandbox Environment: Simulated clearing rails for test funding.</span>
+      </div>
+
+      <!-- Current Available Funds -->
+      <div class="flex justify-between items-center text-xs text-muted px-2 mb-3">
+        <span>Target: Primary INR Wallet</span>
+        <span id="current-balance-display">Available: ₹ ...</span>
       </div>
 
       <!-- Amount Input Box -->
@@ -124,6 +141,39 @@
 
       <button type="button" id="btn-topup" class="btn btn-primary btn-block btn-lg press-scale">
         Add Funds to Wallet
+      </button>
+    </div>
+
+    <!-- Success Top-Up Confirmation View -->
+    <div id="topup-receipt-container" class="topup-receipt page-enter">
+      <div class="animated-check-circle">
+        <svg class="animated-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline class="animated-check-path" points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <h2 class="text-xl font-bold text-success mb-1">Wallet Funded Successfully</h2>
+      <p class="text-xs text-secondary mb-4">Simulated funds credited to your Primary INR Wallet</p>
+
+      <div class="text-4xl font-bold text-primary tabular-nums mb-6" id="success-topup-amount">₹ 0.00</div>
+
+      <div class="card text-left mb-6" style="background: var(--color-surface-subtle);">
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Transaction Type</span>
+          <span class="font-semibold text-primary">Simulated Bank Clearing</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-muted">Funding Reference</span>
+          <span class="font-mono font-semibold text-primary" id="success-topup-ref">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs">
+          <span class="text-muted">Double-Entry Status</span>
+          <span class="font-semibold text-success">Balanced Ledger Entry</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-block btn-lg press-scale" onclick="window.location.href='dashboard.html'">
+        Back to Dashboard
       </button>
     </div>
   </main>

@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Send Money — PayBuddy</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/animations.css">
@@ -46,6 +52,27 @@
       text-align: center;
       padding: var(--space-6) var(--space-4);
     }
+    /* Payment Review Confirmation Modal */
+    .review-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(32, 27, 45, 0.5);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+    .review-sheet {
+      background: var(--color-surface);
+      border-radius: var(--radius-2xl);
+      max-width: 420px;
+      width: 100%;
+      padding: var(--space-6);
+      box-shadow: var(--shadow-modal);
+      animation: pageFadeUp 200ms var(--ease-spring);
+    }
   </style>
 </head>
 <body>
@@ -61,7 +88,7 @@
       </a>
       <span class="text-md font-bold text-primary">Send Money</span>
     </div>
-    <span class="badge badge-success">UPI Instant</span>
+    <span class="badge badge-success">UPI Rails</span>
   </header>
 
   <main class="wallet-shell page-enter">
@@ -115,6 +142,12 @@
           <button type="button" class="amount-chip" data-amount="1000">+ ₹1,000</button>
           <button type="button" class="amount-chip" data-amount="2000">+ ₹2,000</button>
         </div>
+
+        <!-- Optional Description / Note -->
+        <div class="mt-4 pt-3" style="border-top: 1px solid var(--color-border);">
+          <label class="form-label" for="transfer-note">Payment Note (Optional)</label>
+          <input type="text" id="transfer-note" class="form-input mt-1" placeholder="e.g. Dinner, Rent share, Coffee">
+        </div>
       </div>
 
       <!-- Sender Balance Indicator -->
@@ -123,9 +156,9 @@
         <span id="available-balance-hint">Checking balance...</span>
       </div>
 
-      <!-- Submit Action -->
-      <button type="button" id="btn-send-transfer" class="btn btn-primary btn-block btn-lg press-scale" disabled>
-        Proceed to Pay
+      <!-- Action Button -->
+      <button type="button" id="btn-review-transfer" class="btn btn-primary btn-block btn-lg press-scale" disabled>
+        Review Payment
       </button>
     </div>
 
@@ -162,11 +195,54 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-primary btn-block btn-lg press-scale" onclick="window.location.href='dashboard.html'">
-        Done
-      </button>
+      <div class="flex gap-2">
+        <button type="button" class="btn btn-outline btn-block btn-md press-scale" onclick="window.print()">
+          Print Receipt
+        </button>
+        <button type="button" class="btn btn-primary btn-block btn-md press-scale" onclick="window.location.href='dashboard.html'">
+          Done
+        </button>
+      </div>
     </div>
   </main>
+
+  <!-- Payment Review Confirmation Modal -->
+  <div class="review-modal-overlay" id="review-modal">
+    <div class="review-sheet">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-2xs font-bold text-muted uppercase tracking-wider">CONFIRM PAYMENT</span>
+        <button type="button" id="btn-close-review" class="btn btn-ghost btn-sm" style="font-size: 16px;">✕</button>
+      </div>
+
+      <div class="text-center mb-4">
+        <div class="text-3xl font-bold text-primary tabular-nums" id="review-modal-amount">₹ 0.00</div>
+        <div class="text-2xs text-secondary mt-1">Instant P2P Transfer</div>
+      </div>
+
+      <div class="card mb-5" style="background: var(--color-surface-subtle);">
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-secondary">Recipient</span>
+          <span class="font-semibold text-primary" id="review-modal-recipient">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-secondary">Destination Wallet</span>
+          <span class="font-mono text-2xs font-semibold text-primary" id="review-modal-wallet">-</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
+          <span class="text-secondary">Fee</span>
+          <span class="font-semibold text-success">₹ 0.00 (Zero Fee)</span>
+        </div>
+        <div class="flex justify-between py-2 text-xs">
+          <span class="text-secondary">Total Debited</span>
+          <span class="font-bold text-primary" id="review-modal-total">₹ 0.00</span>
+        </div>
+      </div>
+
+      <button type="button" id="btn-confirm-pay" class="btn btn-primary btn-block btn-lg press-scale">
+        Confirm & Pay Now
+      </button>
+    </div>
+  </div>
 
   <script type="module" src="../js/send-money.js"></script>
 </body>

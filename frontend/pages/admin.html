@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System & Ledger Console — PayBuddy</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .admin-container {
+      max-width: 900px;
+      margin: var(--space-6) auto;
+      padding: 0 var(--space-4);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .metric-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-xs);
+    }
+    .metric-label {
+      font-size: var(--font-size-2xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      margin-top: var(--space-1);
+    }
+    .table-container {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow-x: auto;
+      box-shadow: var(--shadow-xs);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: var(--font-size-xs);
+    }
+    th {
+      background: var(--color-surface-subtle);
+      padding: var(--space-3) var(--space-4);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--color-border);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-primary);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: var(--color-surface-subtle);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header class="app-header">
+    <div class="brand-logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <rect width="24" height="24" rx="7" fill="url(#adminBrandGrad)"/>
+        <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
+        <path d="M7 13H11V18H7V13Z" fill="white"/>
+        <defs>
+          <linearGradient id="adminBrandGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#381466"/>
+            <stop offset="0.6" stop-color="#5F259F"/>
+            <stop offset="1" stop-color="#8050C7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      PayBuddy
+      <span class="brand-badge">Admin & Observability</span>
+    </div>
+    <a href="dashboard.html" class="btn btn-primary btn-sm">Dashboard →</a>
+  </header>
+
+  <main class="admin-container page-enter">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-primary">System & Financial Ledger Observability</h1>
+        <p class="text-xs text-secondary mt-1">Live metrics from Node.js runtime, MySQL 8 pool, and double-entry journal.</p>
+      </div>
+      <button type="button" id="btn-refresh-admin" class="btn btn-outline btn-sm press-scale">
+        🔄 Refresh
+      </button>
+    </div>
+
+    <!-- Live System Metric Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">API Health</div>
+        <div class="metric-value text-success" id="admin-api-status">200 UP</div>
+        <div class="text-2xs text-muted mt-1" id="admin-uptime">Uptime: ...</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Memory (Heap Used)</div>
+        <div class="metric-value text-primary" id="admin-heap">... MB</div>
+        <div class="text-2xs text-muted mt-1" id="admin-rss">RSS: ... MB</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">ACID Isolation</div>
+        <div class="metric-value text-brand">InnoDB</div>
+        <div class="text-2xs text-success font-semibold mt-1">Deterministic Locks Active</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Idempotency Guard</div>
+        <div class="metric-value text-success">Active</div>
+        <div class="text-2xs text-muted mt-1">TTL: 86,400s (24h)</div>
+      </div>
+    </div>
+
+    <!-- Global Financial Ledger Table -->
+    <div class="card mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-md font-bold text-primary">Recent Transactions & Audit Trail</h2>
+          <p class="text-2xs text-secondary">Verified records stored in MySQL transactions table.</p>
+        </div>
+        <span class="badge badge-success" id="admin-tx-count">0 Records</span>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Counterparty</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="admin-tx-tbody">
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">Loading ledger transactions...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { apiRequest } from '../js/api.js';
+    import { requireAuth } from '../js/auth.js';
+    import { formatTransactionDate, showToast } from '../js/utils.js';
+
+    requireAuth();
+
+    async function loadAdminData() {
+      // 1. Fetch Health Metrics
+      try {
+        const health = await fetch('http://localhost:5000/health').then(r => r.json());
+        document.getElementById('admin-api-status').textContent = `${health.status} UP`;
+        document.getElementById('admin-uptime').textContent = `Uptime: ${Math.floor(health.uptime / 60)} min ${health.uptime % 60} sec`;
+        
+        if (health.memoryUsage) {
+          const heapUsedMb = (health.memoryUsage.heapUsed / (1024 * 1024)).toFixed(1);
+          const rssMb = (health.memoryUsage.rss / (1024 * 1024)).toFixed(1);
+          document.getElementById('admin-heap').textContent = `${heapUsedMb} MB`;
+          document.getElementById('admin-rss').textContent = `RSS: ${rssMb} MB`;
+        }
+      } catch (err) {
+        document.getElementById('admin-api-status').textContent = 'OFFLINE';
+        document.getElementById('admin-api-status').className = 'metric-value text-error';
+      }
+
+      // 2. Fetch Transactions
+      try {
+        const res = await apiRequest('/transactions?limit=20');
+        const txs = res.data || [];
+        document.getElementById('admin-tx-count').textContent = `${txs.length} Records`;
+
+        const tbody = document.getElementById('admin-tx-tbody');
+        if (txs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">No transactions recorded yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = txs.map(tx => {
+          const isCredit = tx.direction === 'CREDIT';
+          return `
+            <tr>
+              <td class="font-mono text-2xs font-semibold text-primary">${tx.reference || 'N/A'}</td>
+              <td class="font-semibold">${tx.counterparty}</td>
+              <td class="text-2xs">${tx.type === 'WALLET_FUNDING' ? 'Top-Up' : 'P2P Transfer'}</td>
+              <td class="font-bold tabular-nums ${isCredit ? 'text-success' : 'text-primary'}">${isCredit ? '+' : '-'} ₹ ${parseFloat(tx.amount).toFixed(2)}</td>
+              <td><span class="badge ${tx.status === 'SUCCESS' ? 'badge-success' : 'badge-error'}">${tx.status}</span></td>
+              <td class="text-2xs text-muted">${formatTransactionDate(tx.createdAt)}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        showToast('Failed to load transaction audit trail.', 'error');
+      }
+    }
+
+    document.getElementById('btn-refresh-admin').addEventListener('click', () => {
+      loadAdminData();
+      showToast('Observability metrics updated', 'info');
+    });
+
+    loadAdminData();
+  </script>
+</body>
+</html>

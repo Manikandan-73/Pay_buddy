@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile — PayBuddy</title>
+  <title>User Profile & Settings — PayBuddy</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/animations.css">
@@ -21,7 +27,7 @@
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </a>
-      <span class="text-md font-bold text-primary">Account Profile</span>
+      <span class="text-md font-bold text-primary">Account & Security</span>
     </div>
     <span class="badge badge-success">✓ KYC Active</span>
   </header>
@@ -68,13 +74,52 @@
         </div>
       </div>
 
+      <!-- App & Security Preferences -->
+      <div class="card mb-4">
+        <span class="text-2xs font-bold text-muted uppercase">SECURITY & PREFERENCES</span>
+        
+        <div class="settings-row">
+          <div>
+            <div class="text-xs font-semibold text-primary">Hide Balance by Default</div>
+            <div class="text-2xs text-secondary">Mask wallet funds upon opening the app</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pref-hide-balance">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="text-xs font-semibold text-primary">Biometric simulated authentication</div>
+            <div class="text-2xs text-secondary">Require fingerprint simulation for payouts</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked id="pref-biometric">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="text-xs font-semibold text-primary">Real-Time Transaction Toasts</div>
+            <div class="text-2xs text-secondary">Instant feedback after ledger reconciliation</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked id="pref-toasts">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
       <!-- Security Tenets Card -->
       <div class="card mb-6" style="background: var(--color-surface-subtle);">
         <span class="text-2xs font-bold text-muted uppercase">FINTECH ARCHITECTURE INVARIANTS</span>
         <div class="flex flex-col gap-2 mt-2 text-2xs text-secondary">
-          <div>🛡️ Double-Entry Ledger Reconciliation: <span class="text-success font-semibold">Active</span></div>
+          <div>🛡️ Double-Entry Ledger: <span class="text-success font-semibold">Immutable Journal Active</span></div>
           <div>🔒 Concurrency Protection: <span class="text-success font-semibold">Deterministic Row Locks</span></div>
-          <div>⚡ Network Fault Guard: <span class="text-success font-semibold">SHA-256 Idempotency</span></div>
+          <div>⚡ Network Fault Guard: <span class="text-success font-semibold">SHA-256 Idempotency Keys</span></div>
+          <div>💼 ACID Transactions: <span class="text-success font-semibold">InnoDB Isolation Level READ COMMITTED</span></div>
         </div>
       </div>
 
@@ -110,6 +155,16 @@
       } catch (err) {
         showToast('Failed to load profile details.', 'error');
       }
+    }
+
+    // Load and store preferences
+    const prefHideBalance = document.getElementById('pref-hide-balance');
+    if (prefHideBalance) {
+      prefHideBalance.checked = sessionStorage.getItem('paybuddy_hide_balance') === 'true';
+      prefHideBalance.addEventListener('change', () => {
+        sessionStorage.setItem('paybuddy_hide_balance', prefHideBalance.checked);
+        showToast('Preference saved', 'success');
+      });
     }
 
     document.getElementById('btn-logout').addEventListener('click', () => {

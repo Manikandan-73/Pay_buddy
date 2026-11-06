@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Transaction History — PayBuddy</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/animations.css">
@@ -47,7 +53,7 @@
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(32, 27, 45, 0.45);
+      background: rgba(32, 27, 45, 0.5);
       backdrop-filter: blur(8px);
       z-index: 500;
       align-items: center;
@@ -57,12 +63,20 @@
     .modal-sheet {
       background: var(--color-surface);
       border-radius: var(--radius-2xl);
-      max-width: 420px;
+      max-width: 440px;
       width: 100%;
       padding: var(--space-6);
       box-shadow: var(--shadow-modal);
       max-height: 90vh;
       overflow-y: auto;
+      animation: pageFadeUp 200ms var(--ease-spring);
+    }
+    .ledger-entry-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-3);
+      font-size: 11px;
     }
   </style>
 </head>
@@ -77,9 +91,9 @@
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </a>
-      <span class="text-md font-bold text-primary">Financial Ledger</span>
+      <span class="text-md font-bold text-primary">Financial Journal</span>
     </div>
-    <span class="brand-badge">Audit Journal</span>
+    <span class="brand-badge">Audit Trail</span>
   </header>
 
   <main class="wallet-shell page-enter">
@@ -112,13 +126,13 @@
   <div class="modal-overlay" id="receipt-modal">
     <div class="modal-sheet page-enter">
       <div class="flex justify-between items-center mb-4">
-        <span class="text-2xs font-bold text-muted uppercase tracking-wider">OFFICIAL PAYMENT RECEIPT</span>
+        <span class="text-2xs font-bold text-muted uppercase tracking-wider">OFFICIAL TRANSACTION RECEIPT</span>
         <button type="button" id="btn-close-modal" class="btn btn-ghost btn-sm" style="font-size: 16px;">✕</button>
       </div>
 
-      <div class="text-center mb-5">
-        <div class="text-xs font-semibold" id="modal-status-badge">SUCCESS</div>
-        <div class="text-3xl font-bold mt-1 tabular-nums text-primary" id="modal-amount">₹ 0.00</div>
+      <div class="text-center mb-4">
+        <div class="badge badge-success" id="modal-status-badge">SUCCESS</div>
+        <div class="text-3xl font-bold mt-2 tabular-nums text-primary" id="modal-amount">₹ 0.00</div>
         <div class="text-2xs font-mono text-muted mt-1" id="modal-utr">UTR: -</div>
       </div>
 
@@ -143,15 +157,23 @@
 
       <!-- Immutable Double-Entry Ledger Verification -->
       <div class="mb-5">
-        <span class="text-2xs font-bold text-muted uppercase">DOUBLE-ENTRY LEDGER AUDIT LOG</span>
-        <div id="modal-ledger-entries" class="mt-2 text-xs flex flex-col gap-1">
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-2xs font-bold text-muted uppercase">DOUBLE-ENTRY LEDGER ENTRIES</span>
+          <span class="text-2xs text-success font-semibold">Balanced ✓</span>
+        </div>
+        <div id="modal-ledger-entries" class="flex flex-col gap-2">
           <!-- Populated dynamically -->
         </div>
       </div>
 
-      <button type="button" class="btn btn-primary btn-block btn-md press-scale" onclick="window.print()">
-        Print Digital Receipt
-      </button>
+      <div class="flex gap-2">
+        <button type="button" class="btn btn-outline btn-block btn-md press-scale" onclick="window.print()">
+          Print Receipt
+        </button>
+        <button type="button" class="btn btn-primary btn-block btn-md press-scale" id="btn-copy-utr-modal">
+          Copy Reference
+        </button>
+      </div>
     </div>
   </div>
 

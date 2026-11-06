@@ -1,18 +1,15 @@
 /**
  * PayBuddy Premium Send Money Controller
- * Seamless Recipient Resolution with Live Feedback & Animated Receipt
+ * Multi-Step Guided Checkout with Idempotency & Live Recipient Verification
  */
 
 import { apiRequest } from './api.js';
 import { requireAuth } from './auth.js';
-import { formatINR, generateUUID, showToast, formatTransactionDate } from './utils.js';
+import { formatINR, showToast, generateUUID } from './utils.js';
 
 requireAuth();
 
-let selectedRecipient = null;
-let userWallet = null;
-
-const inputQuery = document.getElementById('recipient-query');
+const queryInput = document.getElementById('recipient-query');
 const btnLookup = document.getElementById('btn-lookup');
 const previewBox = document.getElementById('recipient-preview-box');
 const recAvatar = document.getElementById('rec-avatar');
@@ -21,79 +18,94 @@ const recMeta = document.getElementById('rec-meta');
 
 const amountCard = document.getElementById('amount-card');
 const amountInput = document.getElementById('transfer-amount');
+const noteInput = document.getElementById('transfer-note');
 const balanceHint = document.getElementById('available-balance-hint');
-const btnSend = document.getElementById('btn-send-transfer');
+const btnReviewTransfer = document.getElementById('btn-review-transfer');
 
-const flowContainer = document.getElementById('transfer-flow-container');
+// Review Modal Elements
+const reviewModal = document.getElementById('review-modal');
+const btnCloseReview = document.getElementById('btn-close-review');
+const reviewModalAmount = document.getElementById('review-modal-amount');
+const reviewModalRecipient = document.getElementById('review-modal-recipient');
+const reviewModalWallet = document.getElementById('review-modal-wallet');
+const reviewModalTotal = document.getElementById('review-modal-total');
+const btnConfirmPay = document.getElementById('btn-confirm-pay');
+
+// Receipt Elements
+const transferFlowContainer = document.getElementById('transfer-flow-container');
 const receiptContainer = document.getElementById('receipt-container');
 const receiptAmount = document.getElementById('receipt-amount');
 const receiptReceiverName = document.getElementById('receipt-receiver-name');
 const receiptUtr = document.getElementById('receipt-utr');
 const receiptTime = document.getElementById('receipt-time');
 
-// Load wallet balance
-async function initWallet() {
-  try {
-    const res = await apiRequest('/wallets/primary');
-    userWallet = res.data;
-    const balanceNum = parseFloat(userWallet.balance);
-    balanceHint.textContent = `Available: ₹${balanceNum.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+let verifiedRecipient = null;
+let senderBalance = 0;
 
-    if (balanceNum <= 0) {
-      balanceHint.innerHTML = `Available: <span class="text-error font-bold">₹0.00</span> — <a href="add-money.html" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">Add Money First</a>`;
+// 1. Fetch Sender Primary Balance
+async function fetchSenderBalance() {
+  try {
+    const res = await apiRequest('/auth/me');
+    if (res.data?.primaryWallet) {
+      senderBalance = parseFloat(res.data.primaryWallet.balance) || 0;
+      balanceHint.textContent = `Available: ₹ ${senderBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
     }
   } catch (err) {
-    showToast('Failed to load wallet: ' + err.message, 'error');
+    balanceHint.textContent = 'Balance unavailable';
   }
 }
 
-// Quick contact click handler
-document.querySelectorAll('.quick-contact-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    inputQuery.value = btn.dataset.contact;
-    lookupRecipient();
-  });
-});
-
-// Recipient Lookup
-async function lookupRecipient() {
-  const query = inputQuery.value.trim();
+// 2. Lookup Recipient
+async function lookupRecipient(searchKey) {
+  const query = searchKey || queryInput.value.trim();
   if (!query) {
-    showToast('Enter recipient mobile, email, or name.', 'info');
+    showToast('Enter recipient mobile, email, or name', 'error');
     return;
   }
 
   btnLookup.disabled = true;
-  btnLookup.textContent = '...';
+  btnLookup.classList.add('btn-loading');
 
   try {
     const res = await apiRequest(`/wallets/lookup?query=${encodeURIComponent(query)}`);
-    selectedRecipient = res.data;
+    const recipient = res.data;
 
-    recName.textContent = selectedRecipient.recipient.fullName;
-    recMeta.textContent = `${selectedRecipient.recipient.email} • ${selectedRecipient.recipient.phone}`;
-    recAvatar.textContent = selectedRecipient.recipient.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    verifiedRecipient = recipient;
 
+    // Render Preview Box
+    recName.textContent = recipient.fullName;
+    recMeta.textContent = `${recipient.email} • ${recipient.phone}`;
+    recAvatar.textContent = recipient.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
     previewBox.style.display = 'block';
+
+    // Unlock Amount Card
     amountCard.style.opacity = '1';
     amountCard.style.pointerEvents = 'auto';
-    btnSend.disabled = false;
     amountInput.focus();
+
+    validateReadyToPay();
+    showToast(`Recipient verified: ${recipient.fullName}`, 'success');
   } catch (err) {
-    selectedRecipient = null;
+    verifiedRecipient = null;
     previewBox.style.display = 'none';
     amountCard.style.opacity = '0.5';
     amountCard.style.pointerEvents = 'none';
-    btnSend.disabled = true;
+    btnReviewTransfer.disabled = true;
     showToast(err.message, 'error');
   } finally {
     btnLookup.disabled = false;
-    btnLookup.textContent = 'Find';
+    btnLookup.classList.remove('btn-loading');
   }
 }
 
-btnLookup.addEventListener('click', lookupRecipient);
-inputQuery.addEventListener('keydown', (e) => {
+function validateReadyToPay() {
+  const amount = parseFloat(amountInput.value);
+  const isValid = verifiedRecipient && !isNaN(amount) && amount > 0 && amount <= senderBalance;
+  btnReviewTransfer.disabled = !isValid;
+}
+
+btnLookup.addEventListener('click', () => lookupRecipient());
+queryInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') lookupRecipient();
 });
 
@@ -103,63 +115,99 @@ document.querySelectorAll('.amount-chip').forEach(chip => {
     const chipVal = parseFloat(chip.dataset.amount);
     const currentVal = parseFloat(amountInput.value) || 0;
     amountInput.value = currentVal + chipVal;
+    validateReadyToPay();
   });
 });
 
-// Transfer Execution
-btnSend.addEventListener('click', async () => {
+amountInput.addEventListener('input', validateReadyToPay);
+
+// Quick suggested contact buttons
+document.querySelectorAll('.quick-contact-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    queryInput.value = btn.dataset.contact;
+    lookupRecipient(btn.dataset.contact);
+  });
+});
+
+// 3. Open Review Confirmation Modal
+btnReviewTransfer.addEventListener('click', () => {
   const amount = parseFloat(amountInput.value);
+  if (!verifiedRecipient || isNaN(amount) || amount <= 0) return;
 
-  if (!selectedRecipient) {
-    showToast('Please search and verify a recipient first.', 'error');
+  if (amount > senderBalance) {
+    showToast(`Insufficient balance. Maximum available: ₹ ${senderBalance.toFixed(2)}`, 'error');
     return;
   }
 
-  if (isNaN(amount) || amount <= 0) {
-    showToast('Please enter a valid amount greater than ₹0.00', 'error');
-    return;
-  }
+  reviewModalAmount.textContent = `₹ ${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+  reviewModalRecipient.textContent = `${verifiedRecipient.fullName} (${verifiedRecipient.email})`;
+  reviewModalWallet.textContent = verifiedRecipient.walletId;
+  reviewModalTotal.textContent = `₹ ${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
 
-  if (amount > parseFloat(userWallet.balance)) {
-    showToast(`Insufficient balance (Available: ₹${parseFloat(userWallet.balance).toFixed(2)}). Please Add Money first!`, 'error');
-    return;
-  }
+  reviewModal.style.display = 'flex';
+});
 
-  btnSend.disabled = true;
-  btnSend.classList.add('btn-loading');
+btnCloseReview.addEventListener('click', () => {
+  reviewModal.style.display = 'none';
+});
+
+reviewModal.addEventListener('click', (e) => {
+  if (e.target === reviewModal) {
+    reviewModal.style.display = 'none';
+  }
+});
+
+// 4. Confirm & Execute Transfer
+btnConfirmPay.addEventListener('click', async () => {
+  const amount = parseFloat(amountInput.value);
+  const note = noteInput?.value.trim() || undefined;
+
+  btnConfirmPay.disabled = true;
+  btnConfirmPay.classList.add('btn-loading');
 
   const idempotencyKey = generateUUID();
 
   try {
-    const response = await apiRequest('/transfers', {
+    const res = await apiRequest('/transfers', {
       method: 'POST',
       headers: {
         'x-idempotency-key': idempotencyKey
       },
       body: JSON.stringify({
-        receiverWalletId: selectedRecipient.wallet.id,
+        receiverWalletId: verifiedRecipient.walletId,
         amount: amount.toFixed(2),
-        currency: 'INR'
+        ...(note && { description: note })
       })
     });
 
-    const tx = response.data.transaction;
+    const tx = res.data;
 
-    // Display Animated Digital Receipt
+    // Hide Review Modal & Transfer Form
+    reviewModal.style.display = 'none';
+    transferFlowContainer.style.display = 'none';
+
+    // Populate Success Receipt
     receiptAmount.textContent = `₹ ${parseFloat(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-    receiptReceiverName.textContent = selectedRecipient.recipient.fullName;
-    receiptUtr.textContent = tx.reference;
-    receiptTime.textContent = formatTransactionDate(tx.completedAt);
+    receiptReceiverName.textContent = verifiedRecipient.fullName;
+    receiptUtr.textContent = tx.reference || 'UTR-PENDING';
+    receiptTime.textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 
-    flowContainer.style.display = 'none';
     receiptContainer.style.display = 'block';
-
-    showToast('Payment successful!', 'success');
+    showToast('Payment confirmed & reconciled!', 'success');
   } catch (err) {
-    showToast(err.message, 'error');
-    btnSend.disabled = false;
-    btnSend.classList.remove('btn-loading');
+    showToast('Transfer failed: ' + err.message, 'error');
+  } finally {
+    btnConfirmPay.disabled = false;
+    btnConfirmPay.classList.remove('btn-loading');
   }
 });
 
-initWallet();
+// 5. Check URL parameters for direct recipient pre-fill
+const urlParams = new URLSearchParams(window.location.search);
+const recipientParam = urlParams.get('recipient');
+if (recipientParam) {
+  queryInput.value = recipientParam;
+  lookupRecipient(recipientParam);
+}
+
+fetchSenderBalance();

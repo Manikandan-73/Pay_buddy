@@ -1,5 +1,5 @@
 /**
- * Add Money Page Controller
+ * PayBuddy Premium Add Money Controller
  */
 
 import { apiRequest } from './api.js';
@@ -8,13 +8,32 @@ import { showToast, generateUUID } from './utils.js';
 
 requireAuth();
 
+const currentBalanceDisplay = document.getElementById('current-balance-display');
 const amountInput = document.getElementById('topup-amount');
 const btnTopup = document.getElementById('btn-topup');
 const optionCards = document.querySelectorAll('.payment-option-card');
 
+const formContainer = document.getElementById('topup-form-container');
+const receiptContainer = document.getElementById('topup-receipt-container');
+const successAmount = document.getElementById('success-topup-amount');
+const successRef = document.getElementById('success-topup-ref');
+
 let selectedMethod = 'SIMULATED_UPI';
 
-// Selection handling
+// Load initial balance
+async function loadBalance() {
+  try {
+    const res = await apiRequest('/auth/me');
+    if (res.data?.primaryWallet) {
+      const bal = parseFloat(res.data.primaryWallet.balance);
+      currentBalanceDisplay.textContent = `Available: ₹ ${bal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    }
+  } catch (err) {
+    currentBalanceDisplay.textContent = 'Available: ₹ 0.00';
+  }
+}
+
+// Payment channel selection handling
 optionCards.forEach(card => {
   card.addEventListener('click', () => {
     optionCards.forEach(c => {
@@ -63,11 +82,15 @@ btnTopup.addEventListener('click', async () => {
       })
     });
 
-    showToast(`Successfully added ₹${amount.toFixed(2)} to wallet!`, 'success');
+    const tx = res.data?.transaction || {};
 
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 800);
+    // Switch to animated receipt screen
+    formContainer.style.display = 'none';
+    successAmount.textContent = `₹ ${amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    successRef.textContent = tx.reference || `UTR-FUND-${Date.now().toString().slice(-6)}`;
+    receiptContainer.style.display = 'block';
+
+    showToast(`Successfully added ₹${amount.toFixed(2)} to wallet!`, 'success');
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
@@ -75,3 +98,5 @@ btnTopup.addEventListener('click', async () => {
     btnTopup.classList.remove('btn-loading');
   }
 });
+
+loadBalance();

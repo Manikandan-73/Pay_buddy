@@ -5,7 +5,7 @@
 
 import { apiRequest } from './api.js';
 import { requireAuth, saveSession } from './auth.js';
-import { formatINR, formatTransactionDate, showToast, animateCountUp } from './utils.js';
+import { formatINR, formatTransactionDate, showToast, animateCountUp, copyToClipboard } from './utils.js';
 
 requireAuth();
 
@@ -13,13 +13,21 @@ const greetingEl = document.getElementById('user-greeting');
 const navUserInitials = document.getElementById('nav-user-initials');
 const balanceDisplay = document.getElementById('wallet-balance-display');
 const walletIdDisplay = document.getElementById('wallet-id-display');
+const walletIdPill = document.getElementById('wallet-id-pill');
 const portfolioMainBalance = document.getElementById('portfolio-main-balance');
+const portfolioRewardBalance = document.getElementById('portfolio-reward-balance');
 const btnRefresh = document.getElementById('btn-refresh-balance');
 const btnToggleEye = document.getElementById('btn-toggle-eye');
 const eyeIcon = document.getElementById('eye-icon');
 const txContainer = document.getElementById('transactions-container');
 
+// Notifications Drawer Elements
+const btnNotifications = document.getElementById('btn-notifications');
+const notificationsDrawer = document.getElementById('notifications-drawer');
+const btnCloseNotifications = document.getElementById('btn-close-notifications');
+
 let rawBalance = '0.00';
+let currentWalletId = '';
 let isBalanceHidden = sessionStorage.getItem('paybuddy_hide_balance') === 'true';
 
 // Compute Time-of-Day Greeting
@@ -38,6 +46,7 @@ function renderBalance() {
   if (isBalanceHidden) {
     balanceDisplay.textContent = '₹ ••••••';
     if (portfolioMainBalance) portfolioMainBalance.textContent = '₹ ••••••';
+    if (portfolioRewardBalance) portfolioRewardBalance.textContent = '₹ ••••••';
     eyeIcon.innerHTML = `
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
       <line x1="1" y1="1" x2="23" y2="23"></line>
@@ -46,6 +55,9 @@ function renderBalance() {
     animateCountUp(balanceDisplay, rawBalance, 650, '₹ ');
     if (portfolioMainBalance) {
       portfolioMainBalance.textContent = `₹ ${parseFloat(rawBalance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    }
+    if (portfolioRewardBalance) {
+      portfolioRewardBalance.textContent = '₹ 150.00';
     }
     eyeIcon.innerHTML = `
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -60,6 +72,28 @@ btnToggleEye?.addEventListener('click', () => {
   renderBalance();
 });
 
+// Copy Wallet ID Pill
+walletIdPill?.addEventListener('click', () => {
+  if (currentWalletId) {
+    copyToClipboard(currentWalletId, 'Primary Wallet ID copied to clipboard!');
+  }
+});
+
+// Notifications Drawer Listeners
+btnNotifications?.addEventListener('click', () => {
+  notificationsDrawer.style.display = 'flex';
+});
+
+btnCloseNotifications?.addEventListener('click', () => {
+  notificationsDrawer.style.display = 'none';
+});
+
+notificationsDrawer?.addEventListener('click', (e) => {
+  if (e.target === notificationsDrawer) {
+    notificationsDrawer.style.display = 'none';
+  }
+});
+
 async function loadUserData() {
   try {
     const userRes = await apiRequest('/auth/me');
@@ -71,7 +105,8 @@ async function loadUserData() {
 
     if (user.primaryWallet) {
       rawBalance = user.primaryWallet.balance;
-      walletIdDisplay.textContent = `ID: ${user.primaryWallet.id}`;
+      currentWalletId = user.primaryWallet.id;
+      walletIdDisplay.textContent = `ID: ${user.primaryWallet.id.slice(0, 16)}...`;
       saveSession({ user, wallet: user.primaryWallet });
       renderBalance();
     }

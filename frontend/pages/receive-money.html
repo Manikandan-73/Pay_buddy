@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Receive Money — PayBuddy</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/animations.css">
@@ -73,11 +79,23 @@
           </svg>
         </div>
 
-        <p class="text-2xs text-muted mb-1">Scan using any UPI or PayBuddy app to transfer</p>
+        <p class="text-2xs text-muted mb-2">Scan with GPay, PhonePe, Paytm or PayBuddy</p>
+
+        <!-- Share Payment Link Button -->
+        <button type="button" class="btn btn-secondary btn-sm press-scale" id="btn-share-vpa">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          Share UPI Link
+        </button>
       </div>
 
       <!-- Copy Wallet ID Card -->
-      <div class="card text-left mt-2">
+      <div class="card text-left mt-3">
         <span class="text-2xs font-semibold text-muted uppercase">Primary Wallet Account ID</span>
         <div class="flex justify-between items-center mt-2">
           <span class="font-mono text-xs font-semibold text-primary" id="display-wallet-id">Loading...</span>
@@ -100,12 +118,30 @@
       try {
         const res = await apiRequest('/auth/me');
         const user = res.data;
+        const upiId = `${user.phone.replace(/[^0-9]/g, '')}@paybuddy`;
+
         document.getElementById('user-display-name').textContent = user.fullName;
-        document.getElementById('user-upi-id').textContent = `UPI: ${user.phone.replace(/[^0-9]/g, '')}@paybuddy`;
+        document.getElementById('user-upi-id').textContent = `UPI: ${upiId}`;
         document.getElementById('display-wallet-id').textContent = user.primaryWallet.id;
 
         document.getElementById('btn-copy-wallet').addEventListener('click', () => {
           copyToClipboard(user.primaryWallet.id, 'Wallet ID copied to clipboard!');
+        });
+
+        document.getElementById('btn-share-vpa').addEventListener('click', async () => {
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title: 'Pay me on PayBuddy',
+                text: `Send payment to ${user.fullName} via UPI ID: ${upiId} on PayBuddy Wallet`,
+                url: window.location.origin
+              });
+            } catch (err) {
+              copyToClipboard(upiId, 'UPI ID copied to clipboard!');
+            }
+          } else {
+            copyToClipboard(upiId, 'UPI ID copied to clipboard!');
+          }
         });
       } catch (err) {
         showToast('Failed to load profile details.', 'error');
