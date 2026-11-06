@@ -68,14 +68,18 @@ async function lookupRecipient(searchKey) {
 
   try {
     const res = await apiRequest(`/wallets/lookup?query=${encodeURIComponent(query)}`);
-    const recipient = res.data;
+    const recUser = res.data.recipient || res.data;
+    const recWalletId = res.data.wallet?.id || res.data.walletId || recUser.walletId;
 
-    verifiedRecipient = recipient;
+    verifiedRecipient = {
+      ...recUser,
+      walletId: recWalletId
+    };
 
     // Render Preview Box
-    recName.textContent = recipient.fullName;
-    recMeta.textContent = `${recipient.email} • ${recipient.phone}`;
-    recAvatar.textContent = recipient.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    recName.textContent = verifiedRecipient.fullName;
+    recMeta.textContent = `${verifiedRecipient.email} • ${verifiedRecipient.phone}`;
+    recAvatar.textContent = verifiedRecipient.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
     previewBox.style.display = 'block';
 
     // Unlock Amount Card
@@ -180,7 +184,7 @@ btnConfirmPay.addEventListener('click', async () => {
       })
     });
 
-    const tx = res.data;
+    const tx = res.data.transaction || res.data;
 
     // Hide Review Modal & Transfer Form
     reviewModal.style.display = 'none';
