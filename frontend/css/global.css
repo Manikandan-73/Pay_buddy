@@ -76,12 +76,17 @@
 
 @media (min-width: 768px) {
   .wallet-shell {
-    max-width: 960px;
+    max-width: 520px;
     margin: var(--space-6) auto;
     background-color: transparent;
     box-shadow: none;
     border: none;
     min-height: auto;
+  }
+
+  .wallet-shell:has(.dashboard-grid),
+  .wallet-shell.desktop-wide {
+    max-width: 960px;
   }
 
   .dashboard-grid {
