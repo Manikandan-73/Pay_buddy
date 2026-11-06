@@ -1,45 +1,77 @@
 /**
- * PayBuddy Design System Tokens
- * Strictly adheres to Google Material & Indian UPI Fintech visual standards
+ * PayBuddy Premium Design System Tokens
+ * Strict Fintech Standards: Revolut / Apple / Stripe Inspired
  */
 
 :root {
-  /* Brand Identity Colors */
-  --color-primary: #5F259F;         /* PayBuddy Purple */
-  --color-primary-hover: #4A1D7C;
-  --color-primary-light: #F3E8FD;
-  --color-primary-focus: rgba(95, 37, 159, 0.25);
+  /* ==========================================================================
+     1. COLOR SYSTEM (Purple-Led Fintech Identity)
+     ========================================================================== */
+  --color-primary: #5F259F;         /* Primary Brand Purple */
+  --color-primary-deep: #381466;    /* Deep Midnight Purple (Depth/Gradients) */
+  --color-primary-accent: #8050C7;  /* Vibrant Violet Accent */
+  --color-primary-light: #F4EFFF;   /* Subtle Lavender Tint */
+  --color-primary-focus: rgba(95, 37, 159, 0.16);
+  --color-primary-glow: rgba(95, 37, 159, 0.24);
 
   --color-secondary: #4285F4;       /* Trust Blue */
-  --color-secondary-hover: #3367D6;
   --color-secondary-light: #E8F0FE;
 
-  /* Transaction & Status Colors */
+  /* Transaction & Status States */
   --color-success: #00A884;         /* Payment Completed Teal */
-  --color-success-hover: #008F6F;
   --color-success-light: #E6F7F2;
+  --color-success-text: #00604A;
 
-  --color-warning: #F9AB00;         /* Pending / Hold Amber */
+  --color-warning: #F9AB00;         /* Pending / Escrow Amber */
   --color-warning-light: #FEF7E0;
+  --color-warning-text: #8C5B00;
 
-  --color-error: #D93025;           /* Failed / Security Red */
-  --color-error-hover: #C5221F;
+  --color-error: #D93025;           /* Failure / Security Red */
   --color-error-light: #FCE8E6;
+  --color-error-text: #9E1F16;
 
-  /* Surfaces & Neutrals */
-  --color-bg: #F8F9FA;              /* App background */
-  --color-surface: #FFFFFF;         /* Card / Sheet background */
-  --color-surface-subtle: #F1F3F4;
-  --color-border: #E8EAED;          /* Subtle divider */
-  --color-border-strong: #DADCE0;   /* Input borders */
+  /* Surfaces & Neutral Canvas */
+  --color-bg: #F7F6FA;              /* Warm Neutral Canvas (Anti-Glare) */
+  --color-surface: #FFFFFF;         /* Crisp Card Surface */
+  --color-surface-subtle: #FAF9FD;  /* Elevated Secondary Surface */
+  --color-border: #EAE6F0;          /* Refined Border */
+  --color-border-hover: #D5CEDF;
+  --color-border-strong: #CEC7D8;
 
-  /* Typography Colors */
-  --color-text-primary: #202124;    /* High-contrast headings & primary values */
-  --color-text-secondary: #5F6368;  /* Subheadings, metadata, timestamps */
-  --color-text-muted: #80868B;      /* Placeholders, disabled states */
-  --color-text-inverse: #FFFFFF;    /* Text on dark buttons */
+  /* Typography */
+  --color-text-primary: #201B2D;    /* High-Contrast Deep Charcoal */
+  --color-text-secondary: #777180;  /* Sophisticated Slate Gray */
+  --color-text-muted: #A39DAE;      /* Muted Hints & Placeholders */
+  --color-text-inverse: #FFFFFF;
 
-  /* Spacing Scale (4px baseline grid) */
+  /* ==========================================================================
+     2. TYPOGRAPHY & TABULAR METRICS
+     ========================================================================== */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --font-size-2xs: 0.6875rem; /* 11px */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-md: 1rem;       /* 16px - Base */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 2.75rem;   /* 44px - Prominent Balance Display */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Tabular Numerics for Zero-Jitter Financial Figures */
+  --font-variant-numeric: tabular-nums lining-nums;
+
+  /* ==========================================================================
+     3. SPACING (4px Baseline Grid)
+     ========================================================================== */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -51,44 +83,38 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  /* Corner Radius */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
+  /* ==========================================================================
+     4. RADII & ELEVATION SHADOWS
+     ========================================================================== */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-pill: 9999px;
 
-  /* Elevation Shadows (Material-inspired, crisp & subtle) */
-  --shadow-xs: 0 1px 2px rgba(60, 64, 67, 0.08);
-  --shadow-sm: 0 1px 3px rgba(60, 64, 67, 0.12), 0 1px 2px rgba(60, 64, 67, 0.08);
-  --shadow-md: 0 4px 6px -1px rgba(60, 64, 67, 0.12), 0 2px 4px -1px rgba(60, 64, 67, 0.08);
-  --shadow-lg: 0 10px 24px rgba(60, 64, 67, 0.15), 0 4px 8px rgba(60, 64, 67, 0.08);
-  --shadow-bottom-sheet: 0 -8px 24px rgba(60, 64, 67, 0.15);
+  /* Multi-stage ambient occlusion shadows (Apple / Stripe standard) */
+  --shadow-xs: 0 1px 2px rgba(32, 27, 45, 0.04);
+  --shadow-sm: 0 1px 3px rgba(32, 27, 45, 0.05), 0 2px 6px rgba(32, 27, 45, 0.03);
+  --shadow-md: 0 4px 12px rgba(32, 27, 45, 0.06), 0 1px 3px rgba(32, 27, 45, 0.04);
+  --shadow-lg: 0 12px 28px rgba(32, 27, 45, 0.08), 0 4px 12px rgba(32, 27, 45, 0.04);
+  --shadow-modal: 0 24px 60px rgba(32, 27, 45, 0.16), 0 6px 16px rgba(32, 27, 45, 0.08);
 
-  /* Typography */
-  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  /* Card Gradient (Deep & Elegant) */
+  --gradient-wallet-primary: linear-gradient(135deg, #381466 0%, #5F259F 58%, #8050C7 100%);
+  --gradient-wallet-reward: linear-gradient(135deg, #1C1A27 0%, #2D2742 100%);
 
-  --font-size-xs: 0.75rem;     /* 12px */
-  --font-size-sm: 0.875rem;    /* 14px */
-  --font-size-md: 1rem;        /* 16px - Base */
-  --font-size-lg: 1.125rem;    /* 18px */
-  --font-size-xl: 1.25rem;     /* 20px */
-  --font-size-2xl: 1.5rem;     /* 24px */
-  --font-size-3xl: 1.875rem;   /* 30px */
-  --font-size-4xl: 2.25rem;    /* 36px - Big Balance Displays */
-
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  /* ==========================================================================
+     5. FLUID TIMING & EASING (Apple Spring Curves)
+     ========================================================================== */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 
   /* Layout Constrains */
   --max-content-width: 1100px;
   --max-mobile-wallet-width: 440px;
-
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }

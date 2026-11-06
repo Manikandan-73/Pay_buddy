@@ -6,37 +6,49 @@
   <title>Transaction History — PayBuddy</title>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/components.css">
   <style>
-    .filter-tabs {
+    .filter-tabs-wrapper {
       display: flex;
       gap: var(--space-2);
-      margin-bottom: var(--space-4);
+      margin-bottom: var(--space-3);
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .filter-tabs-wrapper::-webkit-scrollbar {
+      display: none;
     }
     .filter-tab {
       background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      border: 1.5px solid var(--color-border);
       border-radius: var(--radius-pill);
-      padding: 6px 14px;
+      padding: 6px 16px;
       font-size: var(--font-size-xs);
       font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
       cursor: pointer;
       white-space: nowrap;
+      transition: all var(--duration-fast) var(--ease-spring);
     }
     .filter-tab.active {
       background: var(--color-primary);
       color: #FFFFFF;
       border-color: var(--color-primary);
+      box-shadow: 0 2px 8px var(--color-primary-glow);
     }
-    /* Modal Backdrop */
+    .search-box {
+      margin-bottom: var(--space-3);
+    }
+    /* Modal Backdrop with Blur */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(32, 27, 45, 0.45);
+      backdrop-filter: blur(8px);
       z-index: 500;
       align-items: center;
       justify-content: center;
@@ -44,11 +56,11 @@
     }
     .modal-sheet {
       background: var(--color-surface);
-      border-radius: var(--radius-xl);
-      max-width: 440px;
+      border-radius: var(--radius-2xl);
+      max-width: 420px;
       width: 100%;
       padding: var(--space-6);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-modal);
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -56,80 +68,89 @@
 </head>
 <body>
 
+  <!-- Top App Navigation -->
   <header class="app-header">
     <div class="flex items-center gap-2">
-      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 4px;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </a>
-      <span class="text-md font-bold">Transaction History</span>
+      <span class="text-md font-bold text-primary">Financial Ledger</span>
     </div>
-    <span class="brand-badge">Audit Ledger</span>
+    <span class="brand-badge">Audit Journal</span>
   </header>
 
-  <main class="wallet-shell">
+  <main class="wallet-shell page-enter">
     <div class="px-4 py-4 flex-1">
       
+      <!-- Live Search Box -->
+      <div class="search-box">
+        <input type="text" id="tx-search-input" class="form-input" placeholder="🔍 Search by name or reference UTR...">
+      </div>
+
       <!-- Filter Tabs -->
-      <div class="filter-tabs">
-        <button type="button" class="filter-tab active" data-filter="ALL">All Transactions</button>
+      <div class="filter-tabs-wrapper">
+        <button type="button" class="filter-tab active" data-filter="ALL">All Activity</button>
         <button type="button" class="filter-tab" data-filter="CREDIT">Credits (+)</button>
         <button type="button" class="filter-tab" data-filter="DEBIT">Debits (-)</button>
         <button type="button" class="filter-tab" data-filter="TOPUP">Top-Ups</button>
       </div>
 
-      <!-- Transaction List -->
+      <!-- Transaction List Container -->
       <div class="card" id="history-container">
-        <div class="text-center py-6 text-muted text-sm">Loading transaction history...</div>
+        <!-- Skeleton Loaders -->
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+        <div class="skeleton skeleton-text" style="width: 60%;"></div>
       </div>
     </div>
   </main>
 
-  <!-- Digital Receipt & Ledger Modal -->
+  <!-- Digital Receipt & Ledger Inspector Modal -->
   <div class="modal-overlay" id="receipt-modal">
-    <div class="modal-sheet">
+    <div class="modal-sheet page-enter">
       <div class="flex justify-between items-center mb-4">
-        <span class="text-xs font-bold text-muted">PAYBUDDY OFFICIAL RECEIPT</span>
-        <button type="button" id="btn-close-modal" class="btn btn-ghost btn-sm">✕</button>
+        <span class="text-2xs font-bold text-muted uppercase tracking-wider">OFFICIAL PAYMENT RECEIPT</span>
+        <button type="button" id="btn-close-modal" class="btn btn-ghost btn-sm" style="font-size: 16px;">✕</button>
       </div>
 
-      <div class="text-center mb-4">
-        <div class="text-xs text-muted" id="modal-status-badge">SUCCESS</div>
-        <div class="text-3xl font-bold mt-1" id="modal-amount">₹ 0.00</div>
-        <div class="text-xs text-muted mt-1" id="modal-utr">UTR: -</div>
+      <div class="text-center mb-5">
+        <div class="text-xs font-semibold" id="modal-status-badge">SUCCESS</div>
+        <div class="text-3xl font-bold mt-1 tabular-nums text-primary" id="modal-amount">₹ 0.00</div>
+        <div class="text-2xs font-mono text-muted mt-1" id="modal-utr">UTR: -</div>
       </div>
 
       <div class="card mb-4" style="background: var(--color-surface-subtle);">
         <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
-          <span class="text-muted">Sender</span>
-          <span class="font-semibold" id="modal-sender">-</span>
+          <span class="text-secondary">Sender</span>
+          <span class="font-semibold text-primary" id="modal-sender">-</span>
         </div>
         <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
-          <span class="text-muted">Receiver</span>
-          <span class="font-semibold" id="modal-receiver">-</span>
+          <span class="text-secondary">Receiver</span>
+          <span class="font-semibold text-primary" id="modal-receiver">-</span>
         </div>
         <div class="flex justify-between py-2 text-xs" style="border-bottom: 1px solid var(--color-border);">
-          <span class="text-muted">Timestamp</span>
+          <span class="text-secondary">Timestamp</span>
           <span id="modal-timestamp">-</span>
         </div>
         <div class="flex justify-between py-2 text-xs">
-          <span class="text-muted">Type</span>
-          <span class="font-semibold" id="modal-type">-</span>
+          <span class="text-secondary">Transaction Channel</span>
+          <span class="font-semibold text-primary" id="modal-type">-</span>
         </div>
       </div>
 
       <!-- Immutable Double-Entry Ledger Verification -->
-      <div class="mb-4">
-        <span class="text-xs font-bold text-muted">DOUBLE-ENTRY LEDGER AUDIT LOG</span>
+      <div class="mb-5">
+        <span class="text-2xs font-bold text-muted uppercase">DOUBLE-ENTRY LEDGER AUDIT LOG</span>
         <div id="modal-ledger-entries" class="mt-2 text-xs flex flex-col gap-1">
           <!-- Populated dynamically -->
         </div>
       </div>
 
-      <button type="button" class="btn btn-primary btn-block btn-md" onclick="window.print()">
-        Print Receipt
+      <button type="button" class="btn btn-primary btn-block btn-md press-scale" onclick="window.print()">
+        Print Digital Receipt
       </button>
     </div>
   </div>

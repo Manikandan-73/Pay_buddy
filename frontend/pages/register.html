@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account — PayBuddy</title>
+  <title>Create Account — PayBuddy Wallet</title>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/components.css">
   <style>
@@ -14,53 +15,78 @@
       margin: var(--space-8) auto;
       padding: var(--space-6);
       background: var(--color-surface);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-2xl);
       border: 1px solid var(--color-border);
       box-shadow: var(--shadow-md);
+    }
+    .strength-meter {
+      height: 4px;
+      width: 100%;
+      background: var(--color-border);
+      border-radius: var(--radius-pill);
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: width var(--duration-normal) var(--ease-spring), background-color var(--duration-normal);
     }
   </style>
 </head>
 <body>
 
+  <!-- Top App Navigation -->
   <header class="app-header">
     <a href="../index.html" class="brand-logo">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <rect width="24" height="24" rx="6" fill="#5F259F"/>
+        <rect width="24" height="24" rx="7" fill="url(#regBrandGrad)"/>
         <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
         <path d="M7 13H11V18H7V13Z" fill="white"/>
+        <defs>
+          <linearGradient id="regBrandGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#381466"/>
+            <stop offset="0.6" stop-color="#5F259F"/>
+            <stop offset="1" stop-color="#8050C7"/>
+          </linearGradient>
+        </defs>
       </svg>
       PayBuddy
     </a>
     <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
   </header>
 
-  <main class="app-container">
+  <main class="app-container page-enter">
     <div class="auth-container">
-      <h1 class="text-2xl font-bold mb-1">Open PayBuddy Wallet</h1>
-      <p class="text-secondary text-sm mb-6">Create an account to automatically receive your primary INR digital wallet.</p>
+      <h1 class="text-2xl font-bold text-primary mb-1">Open Digital Wallet</h1>
+      <p class="text-secondary text-sm mb-6">Create an account with instant primary INR wallet provisioning.</p>
 
       <form id="register-form">
         <div class="form-group">
-          <label class="form-label" for="fullName">Full Name</label>
-          <input type="text" id="fullName" class="form-input" placeholder="e.g. Rahul Sharma" required>
+          <label class="form-label" for="fullName">Full Legal Name</label>
+          <input type="text" id="fullName" class="form-input" placeholder="e.g. Rahul Sharma" required autocomplete="name">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="phone">Mobile Number</label>
-          <input type="tel" id="phone" class="form-input" placeholder="+91 98765 43210" required>
+          <input type="tel" id="phone" class="form-input" placeholder="+91 98765 43210" required autocomplete="tel">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="email">Email Address</label>
-          <input type="email" id="email" class="form-input" placeholder="rahul@example.com" required>
+          <input type="email" id="email" class="form-input" placeholder="rahul@example.com" required autocomplete="email">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="password">Password (min 8 characters)</label>
-          <input type="password" id="password" class="form-input" placeholder="••••••••" required minlength="8">
+          <label class="form-label" for="password">Create Password</label>
+          <input type="password" id="password" class="form-input" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password">
+          <div class="strength-meter">
+            <div class="strength-bar" id="strength-bar"></div>
+          </div>
+          <span class="text-2xs text-muted mt-1" id="strength-text">Password strength: minimum 8 characters</span>
         </div>
 
-        <button type="submit" id="btn-submit" class="btn btn-primary btn-block btn-lg mt-4">
+        <button type="submit" id="btn-submit" class="btn btn-primary btn-block btn-lg mt-4 press-scale">
           Create & Provision Wallet
         </button>
       </form>

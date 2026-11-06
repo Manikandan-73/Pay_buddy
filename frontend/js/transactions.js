@@ -1,5 +1,6 @@
 /**
- * Transaction History & Digital Receipt Controller
+ * PayBuddy Premium Transaction History & Receipt Inspector
+ * Live Client-Side Filtering, Search & Ledger Inspector
  */
 
 import { apiRequest } from './api.js';
@@ -10,6 +11,7 @@ requireAuth();
 
 const historyContainer = document.getElementById('history-container');
 const filterTabs = document.querySelectorAll('.filter-tab');
+const searchInput = document.getElementById('tx-search-input');
 
 // Modal Elements
 const modal = document.getElementById('receipt-modal');
@@ -25,6 +27,7 @@ const modalLedgerEntries = document.getElementById('modal-ledger-entries');
 
 let allTransactions = [];
 let activeFilter = 'ALL';
+let searchQuery = '';
 
 async function fetchTransactions() {
   try {
@@ -39,31 +42,41 @@ async function fetchTransactions() {
 function renderTransactions() {
   let filtered = allTransactions;
 
+  // 1. Tab Filter
   if (activeFilter === 'CREDIT') {
-    filtered = allTransactions.filter(t => t.direction === 'CREDIT');
+    filtered = filtered.filter(t => t.direction === 'CREDIT');
   } else if (activeFilter === 'DEBIT') {
-    filtered = allTransactions.filter(t => t.direction === 'DEBIT');
+    filtered = filtered.filter(t => t.direction === 'DEBIT');
   } else if (activeFilter === 'TOPUP') {
-    filtered = allTransactions.filter(t => t.type === 'WALLET_FUNDING');
+    filtered = filtered.filter(t => t.type === 'WALLET_FUNDING');
+  }
+
+  // 2. Search Query Filter
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(t => 
+      t.counterparty.toLowerCase().includes(q) || 
+      (t.reference && t.reference.toLowerCase().includes(q))
+    );
   }
 
   if (filtered.length === 0) {
-    historyContainer.innerHTML = `<div class="text-center py-8 text-muted text-sm">No transactions found for this filter.</div>`;
+    historyContainer.innerHTML = `<div class="text-center py-8 text-muted text-sm">No transactions match your criteria.</div>`;
     return;
   }
 
-  historyContainer.innerHTML = filtered.map(tx => {
+  historyContainer.innerHTML = filtered.map((tx, idx) => {
     const isCredit = tx.direction === 'CREDIT';
     const amountStr = `${isCredit ? '+' : '-'} ₹ ${parseFloat(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
-    const initials = tx.counterparty.split(' ').map(n => n[0]).join('').slice(0, 2) || 'TX';
+    const initials = tx.counterparty.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'TX';
 
     return `
-      <div class="transaction-item" data-id="${tx.id}">
+      <div class="transaction-item stagger-item" style="animation-delay: ${idx * 35}ms;" data-id="${tx.id}">
         <div class="flex items-center gap-3">
-          <div class="transaction-avatar" style="${isCredit ? 'color: var(--color-success);' : ''}">${initials}</div>
+          <div class="transaction-avatar" style="${isCredit ? 'background-color: var(--color-success-light); color: var(--color-success);' : ''}">${initials}</div>
           <div>
-            <div class="text-sm font-semibold">${tx.counterparty}</div>
-            <div class="text-xs text-muted">${formatTransactionDate(tx.createdAt)} • <span class="font-mono">${tx.reference}</span></div>
+            <div class="text-sm font-semibold text-primary">${tx.counterparty}</div>
+            <div class="text-2xs text-secondary mt-1">${formatTransactionDate(tx.createdAt)} • <span class="font-mono text-muted">${tx.reference}</span></div>
           </div>
         </div>
         <div class="text-right">
@@ -74,13 +87,19 @@ function renderTransactions() {
     `;
   }).join('');
 
-  // Attach click listeners to open receipt modal
+  // Attach modal trigger listeners
   document.querySelectorAll('.transaction-item').forEach(item => {
     item.addEventListener('click', () => {
       openReceiptModal(item.dataset.id);
     });
   });
 }
+
+// Search Filter Input
+searchInput?.addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  renderTransactions();
+});
 
 async function openReceiptModal(txId) {
   try {
@@ -99,14 +118,14 @@ async function openReceiptModal(txId) {
     // Render Ledger Audit
     if (tx.ledgerAudit && tx.ledgerAudit.length > 0) {
       modalLedgerEntries.innerHTML = tx.ledgerAudit.map(entry => `
-        <div class="flex justify-between py-1 px-2" style="background: var(--color-surface); border-radius: 4px; border: 1px solid var(--color-border);">
-          <span class="font-mono text-muted">${entry.entryType}</span>
+        <div class="flex justify-between py-1 px-2 text-2xs" style="background: var(--color-surface); border-radius: 4px; border: 1px solid var(--color-border);">
+          <span class="font-mono font-bold ${entry.entryType === 'CREDIT' ? 'text-success' : 'text-primary'}">${entry.entryType}</span>
           <span class="font-mono font-semibold">₹${parseFloat(entry.amount).toFixed(2)}</span>
-          <span class="text-muted">${entry.walletId.slice(0, 10)}...</span>
+          <span class="text-muted font-mono">${entry.walletId.slice(0, 12)}...</span>
         </div>
       `).join('');
     } else {
-      modalLedgerEntries.innerHTML = `<span class="text-muted">No audit ledger records found.</span>`;
+      modalLedgerEntries.innerHTML = `<span class="text-muted">No audit records found.</span>`;
     }
 
     modal.style.display = 'flex';
@@ -115,11 +134,11 @@ async function openReceiptModal(txId) {
   }
 }
 
-btnCloseModal.addEventListener('click', () => {
+btnCloseModal?.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
-modal.addEventListener('click', (e) => {
+modal?.addEventListener('click', (e) => {
   if (e.target === modal) modal.style.display = 'none';
 });
 

@@ -6,68 +6,80 @@
   <title>User Profile — PayBuddy</title>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/components.css">
 </head>
 <body>
 
+  <!-- Top App Navigation -->
   <header class="app-header">
     <div class="flex items-center gap-2">
-      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 4px;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </a>
-      <span class="text-md font-bold">Account Profile</span>
+      <span class="text-md font-bold text-primary">Account Profile</span>
     </div>
-    <span class="badge badge-success">KYC Verified</span>
+    <span class="badge badge-success">✓ KYC Active</span>
   </header>
 
-  <main class="wallet-shell">
+  <main class="wallet-shell page-enter">
     <div class="px-4 py-6 flex-1">
       
       <!-- User Avatar & Identity Header -->
       <div class="text-center mb-6">
-        <div class="transaction-avatar" id="profile-avatar" style="width: 72px; height: 72px; font-size: 1.5rem; margin: 0 auto var(--space-3);">
+        <div class="transaction-avatar" id="profile-avatar" style="width: 72px; height: 72px; font-size: 1.5rem; margin: 0 auto var(--space-3); box-shadow: var(--shadow-sm);">
           U
         </div>
-        <h2 class="text-xl font-bold" id="profile-name">Loading...</h2>
-        <p class="text-xs text-muted" id="profile-id">ID: ...</p>
+        <h2 class="text-xl font-bold text-primary" id="profile-name">Loading...</h2>
+        <p class="text-2xs font-mono text-muted mt-1" id="profile-id">ID: ...</p>
       </div>
 
       <!-- Contact Details Card -->
       <div class="card mb-4">
-        <span class="text-xs font-bold text-muted">CONTACT INFORMATION</span>
+        <span class="text-2xs font-bold text-muted uppercase">IDENTITY & CONTACT</span>
         <div class="flex justify-between py-2 mt-2 text-sm" style="border-bottom: 1px solid var(--color-border);">
-          <span class="text-muted">Email</span>
-          <span class="font-medium" id="profile-email">-</span>
+          <span class="text-secondary">Email</span>
+          <span class="font-medium text-primary" id="profile-email">-</span>
         </div>
         <div class="flex justify-between py-2 text-sm">
-          <span class="text-muted">Mobile</span>
-          <span class="font-medium" id="profile-phone">-</span>
+          <span class="text-secondary">Mobile</span>
+          <span class="font-medium text-primary" id="profile-phone">-</span>
         </div>
       </div>
 
       <!-- Primary Wallet Status Card -->
-      <div class="card mb-6">
-        <span class="text-xs font-bold text-muted">PRIMARY DIGITAL WALLET</span>
+      <div class="card mb-4">
+        <span class="text-2xs font-bold text-muted uppercase">PRIMARY DIGITAL WALLET</span>
         <div class="flex justify-between py-2 mt-2 text-sm" style="border-bottom: 1px solid var(--color-border);">
-          <span class="text-muted">Wallet ID</span>
-          <span class="font-mono text-xs font-semibold" id="profile-wallet-id">-</span>
+          <span class="text-secondary">Wallet ID</span>
+          <span class="font-mono text-xs font-semibold text-primary" id="profile-wallet-id">-</span>
         </div>
         <div class="flex justify-between py-2 text-sm" style="border-bottom: 1px solid var(--color-border);">
-          <span class="text-muted">Currency</span>
-          <span class="font-semibold">INR (₹)</span>
+          <span class="text-secondary">Currency</span>
+          <span class="font-semibold text-primary">Indian Rupee (INR ₹)</span>
         </div>
         <div class="flex justify-between py-2 text-sm">
-          <span class="text-muted">Balance Snapshot</span>
-          <span class="font-bold text-brand" id="profile-balance">₹ 0.00</span>
+          <span class="text-secondary">Available Balance</span>
+          <span class="font-bold text-brand tabular-nums" id="profile-balance">₹ 0.00</span>
+        </div>
+      </div>
+
+      <!-- Security Tenets Card -->
+      <div class="card mb-6" style="background: var(--color-surface-subtle);">
+        <span class="text-2xs font-bold text-muted uppercase">FINTECH ARCHITECTURE INVARIANTS</span>
+        <div class="flex flex-col gap-2 mt-2 text-2xs text-secondary">
+          <div>🛡️ Double-Entry Ledger Reconciliation: <span class="text-success font-semibold">Active</span></div>
+          <div>🔒 Concurrency Protection: <span class="text-success font-semibold">Deterministic Row Locks</span></div>
+          <div>⚡ Network Fault Guard: <span class="text-success font-semibold">SHA-256 Idempotency</span></div>
         </div>
       </div>
 
       <!-- Logout Button -->
-      <button type="button" id="btn-logout" class="btn btn-outline btn-block btn-lg" style="color: var(--color-error); border-color: var(--color-error);">
+      <button type="button" id="btn-logout" class="btn btn-outline btn-block btn-lg press-scale" style="color: var(--color-error); border-color: var(--color-error);">
         Log Out of PayBuddy
       </button>
     </div>
@@ -89,7 +101,7 @@
         document.getElementById('profile-id').textContent = `User ID: ${user.id}`;
         document.getElementById('profile-email').textContent = user.email;
         document.getElementById('profile-phone').textContent = user.phone;
-        document.getElementById('profile-avatar').textContent = user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2);
+        document.getElementById('profile-avatar').textContent = user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
         if (user.primaryWallet) {
           document.getElementById('profile-wallet-id').textContent = user.primaryWallet.id;

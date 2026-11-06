@@ -1,5 +1,6 @@
 /**
- * Send Money Page Controller
+ * PayBuddy Premium Send Money Controller
+ * Seamless Recipient Resolution with Live Feedback & Animated Receipt
  */
 
 import { apiRequest } from './api.js';
@@ -58,7 +59,7 @@ document.querySelectorAll('.quick-contact-btn').forEach(btn => {
 async function lookupRecipient() {
   const query = inputQuery.value.trim();
   if (!query) {
-    showToast('Enter recipient mobile, email, or wallet ID.', 'info');
+    showToast('Enter recipient mobile, email, or name.', 'info');
     return;
   }
 
@@ -71,7 +72,7 @@ async function lookupRecipient() {
 
     recName.textContent = selectedRecipient.recipient.fullName;
     recMeta.textContent = `${selectedRecipient.recipient.email} • ${selectedRecipient.recipient.phone}`;
-    recAvatar.textContent = selectedRecipient.recipient.fullName.split(' ').map(n => n[0]).join('').slice(0, 2);
+    recAvatar.textContent = selectedRecipient.recipient.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
     previewBox.style.display = 'block';
     amountCard.style.opacity = '1';
@@ -127,7 +128,6 @@ btnSend.addEventListener('click', async () => {
   btnSend.disabled = true;
   btnSend.classList.add('btn-loading');
 
-  // Unique Idempotency Key
   const idempotencyKey = generateUUID();
 
   try {
@@ -145,7 +145,7 @@ btnSend.addEventListener('click', async () => {
 
     const tx = response.data.transaction;
 
-    // Show Digital Receipt
+    // Display Animated Digital Receipt
     receiptAmount.textContent = `₹ ${parseFloat(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
     receiptReceiverName.textContent = selectedRecipient.recipient.fullName;
     receiptUtr.textContent = tx.reference;

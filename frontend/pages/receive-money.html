@@ -6,79 +6,83 @@
   <title>Receive Money — PayBuddy</title>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/animations.css">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/components.css">
   <style>
-    .qr-box {
+    .qr-card-container {
       background: #FFFFFF;
-      border: 2px dashed var(--color-primary);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      display: inline-block;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-6) var(--space-5);
       margin: var(--space-4) auto;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-md);
+      max-width: 340px;
     }
   </style>
 </head>
 <body>
 
+  <!-- Top App Navigation -->
   <header class="app-header">
     <div class="flex items-center gap-2">
-      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 0;">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 4px;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </a>
-      <span class="text-md font-bold">Receive Money</span>
+      <span class="text-md font-bold text-primary">Receive Money</span>
     </div>
     <span class="badge badge-success">UPI QR</span>
   </header>
 
-  <main class="wallet-shell">
+  <main class="wallet-shell page-enter">
     <div class="px-4 py-6 flex-1 text-center">
-      <h2 class="text-xl font-bold" id="user-display-name">Loading...</h2>
-      <p class="text-xs text-muted mt-1" id="user-upi-id">UPI ID: loading...</p>
+      
+      <!-- Elevated QR Card -->
+      <div class="qr-card-container">
+        <h2 class="text-lg font-bold text-primary" id="user-display-name">Loading...</h2>
+        <p class="text-2xs text-secondary mt-1 font-mono" id="user-upi-id">UPI ID: loading...</p>
 
-      <!-- Simulated High-Res UPI QR Code -->
-      <div class="qr-box">
-        <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Outer Positioning Boxes -->
-          <rect x="5" y="5" width="28" height="28" rx="4" stroke="#5F259F" stroke-width="5"/>
-          <rect x="12" y="12" width="14" height="14" fill="#5F259F"/>
+        <!-- Vector High-Precision UPI QR Code -->
+        <div class="my-4 flex justify-center">
+          <svg width="190" height="190" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="5" width="28" height="28" rx="4" stroke="#5F259F" stroke-width="5"/>
+            <rect x="12" y="12" width="14" height="14" fill="#5F259F"/>
 
-          <rect x="67" y="5" width="28" height="28" rx="4" stroke="#5F259F" stroke-width="5"/>
-          <rect x="74" y="12" width="14" height="14" fill="#5F259F"/>
+            <rect x="67" y="5" width="28" height="28" rx="4" stroke="#5F259F" stroke-width="5"/>
+            <rect x="74" y="12" width="14" height="14" fill="#5F259F"/>
 
-          <rect x="5" y="67" width="28" height="28" rx="4" stroke="#5F259F" stroke-width="5"/>
-          <rect x="12" y="74" width="14" height="14" fill="#5F259F"/>
+            <rect x="5" y="67" width="28" height="28" rx="4" stroke="#5F259F" stroke-width="5"/>
+            <rect x="12" y="74" width="14" height="14" fill="#5F259F"/>
 
-          <!-- Stylized Data Matrix Patterns -->
-          <rect x="42" y="8" width="8" height="8" fill="#202124"/>
-          <rect x="54" y="18" width="6" height="6" fill="#202124"/>
-          <rect x="42" y="24" width="8" height="8" fill="#202124"/>
-          <rect x="8" y="42" width="8" height="8" fill="#202124"/>
-          <rect x="22" y="48" width="8" height="8" fill="#202124"/>
-          <rect x="40" y="40" width="20" height="20" rx="4" fill="#5F259F"/>
-          <path d="M46 45H52C53.5 45 54.5 46 54.5 47.5C54.5 49 53.5 50 52 50H46V45Z" fill="white"/>
-          <path d="M46 50H49V55H46V50Z" fill="white"/>
-          <rect x="68" y="45" width="6" height="6" fill="#202124"/>
-          <rect x="80" y="42" width="12" height="6" fill="#202124"/>
-          <rect x="45" y="68" width="8" height="18" fill="#202124"/>
-          <rect x="62" y="72" width="12" height="6" fill="#202124"/>
-          <rect x="82" y="68" width="8" height="18" fill="#202124"/>
-        </svg>
+            <rect x="42" y="8" width="8" height="8" fill="#201B2D"/>
+            <rect x="54" y="18" width="6" height="6" fill="#201B2D"/>
+            <rect x="42" y="24" width="8" height="8" fill="#201B2D"/>
+            <rect x="8" y="42" width="8" height="8" fill="#201B2D"/>
+            <rect x="22" y="48" width="8" height="8" fill="#201B2D"/>
+            <rect x="40" y="40" width="20" height="20" rx="4" fill="#5F259F"/>
+            <path d="M46 45H52C53.5 45 54.5 46 54.5 47.5C54.5 49 53.5 50 52 50H46V45Z" fill="white"/>
+            <path d="M46 50H49V55H46V50Z" fill="white"/>
+            <rect x="68" y="45" width="6" height="6" fill="#201B2D"/>
+            <rect x="80" y="42" width="12" height="6" fill="#201B2D"/>
+            <rect x="45" y="68" width="8" height="18" fill="#201B2D"/>
+            <rect x="62" y="72" width="12" height="6" fill="#201B2D"/>
+            <rect x="82" y="68" width="8" height="18" fill="#201B2D"/>
+          </svg>
+        </div>
+
+        <p class="text-2xs text-muted mb-1">Scan using any UPI or PayBuddy app to transfer</p>
       </div>
-
-      <p class="text-xs text-muted mb-4">Scan with any PayBuddy or simulated UPI app to pay instantly</p>
 
       <!-- Copy Wallet ID Card -->
       <div class="card text-left mt-2">
-        <span class="text-xs font-semibold text-muted">YOUR PRIMARY WALLET ID</span>
-        <div class="flex justify-between items-center mt-1">
-          <span class="font-mono text-sm font-semibold" id="display-wallet-id">Loading...</span>
-          <button type="button" class="btn btn-outline btn-sm" id="btn-copy-wallet">
-            Copy
+        <span class="text-2xs font-semibold text-muted uppercase">Primary Wallet Account ID</span>
+        <div class="flex justify-between items-center mt-2">
+          <span class="font-mono text-xs font-semibold text-primary" id="display-wallet-id">Loading...</span>
+          <button type="button" class="btn btn-outline btn-sm press-scale" id="btn-copy-wallet">
+            Copy ID
           </button>
         </div>
       </div>
@@ -88,7 +92,7 @@
   <script type="module">
     import { apiRequest } from '../js/api.js';
     import { requireAuth } from '../js/auth.js';
-    import { showToast } from '../js/utils.js';
+    import { showToast, copyToClipboard } from '../js/utils.js';
 
     requireAuth();
 
@@ -101,8 +105,7 @@
         document.getElementById('display-wallet-id').textContent = user.primaryWallet.id;
 
         document.getElementById('btn-copy-wallet').addEventListener('click', () => {
-          navigator.clipboard.writeText(user.primaryWallet.id);
-          showToast('Wallet ID copied to clipboard!', 'success');
+          copyToClipboard(user.primaryWallet.id, 'Wallet ID copied to clipboard!');
         });
       } catch (err) {
         showToast('Failed to load profile details.', 'error');

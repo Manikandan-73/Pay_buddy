@@ -1,6 +1,6 @@
 /**
  * PayBuddy Frontend Utility Helpers
- * Native ES6+ functions for formatting, currency, idempotency, and DOM helpers
+ * Native ES6+ functions for formatting, currency, idempotency, and motion helpers
  */
 
 /**
@@ -20,8 +20,42 @@ export function formatINR(amount) {
 }
 
 /**
+ * Animate a numeric balance count-up using requestAnimationFrame and ease-out cubic curve
+ */
+export function animateCountUp(element, targetValue, duration = 650, prefix = '₹ ') {
+  if (!element) return;
+  const target = parseFloat(targetValue) || 0;
+  const start = 0;
+  const startTime = performance.now();
+
+  // If reduced motion is requested, render target immediately
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    element.textContent = `${prefix}${target.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return;
+  }
+
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    // Ease-out cubic: 1 - pow(1 - progress, 3)
+    const easeProgress = 1 - Math.pow(1 - progress, 3);
+    const currentVal = start + (target - start) * easeProgress;
+
+    element.textContent = `${prefix}${currentVal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      element.textContent = `${prefix}${target.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+  }
+
+  requestAnimationFrame(update);
+}
+
+/**
  * Parse monetary input into clean minor units (paise) to eliminate floating point issues
- * Example: "250.50" -> 25050
  */
 export function toPaise(rupeesString) {
   const clean = String(rupeesString).replace(/[^0-9.]/g, '');
@@ -32,7 +66,6 @@ export function toPaise(rupeesString) {
 
 /**
  * Convert paise back to standard decimal string
- * Example: 25050 -> "250.50"
  */
 export function paiseToRupeesString(paise) {
   return (paise / 100).toFixed(2);
@@ -45,7 +78,6 @@ export function generateUUID() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  // RFC4122 v4 fallback
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
@@ -55,7 +87,6 @@ export function generateUUID() {
 
 /**
  * Format ISO Timestamp to readable local format
- * Example: "Today, 04:15 PM" or "31 Oct 2026, 07:00 PM"
  */
 export function formatTransactionDate(isoString) {
   if (!isoString) return '';
@@ -104,7 +135,19 @@ export function showToast(message, type = 'info', duration = 3000) {
   setTimeout(() => {
     toast.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(10px)';
+    toast.style.transform = 'translateY(8px)';
     setTimeout(() => toast.remove(), 250);
   }, duration);
+}
+
+/**
+ * Copy text to clipboard with feedback
+ */
+export async function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(successMsg, 'success');
+  } catch (err) {
+    showToast('Failed to copy', 'error');
+  }
 }
