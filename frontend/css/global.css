@@ -12,43 +12,89 @@
   padding-right: var(--space-4);
 }
 
-/* Mobile-First Wallet Frame (Inspired by Apple Wallet & Revolut) */
+/* Header & Navigation Bar */
+.app-header {
+  height: 64px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.app-header-content {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+}
+
+.desktop-nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.desktop-nav-link {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.desktop-nav-link:hover, .desktop-nav-link.active {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 767px) {
+  .desktop-nav-links {
+    display: none !important;
+  }
+}
+
+/* Mobile-First Wallet Frame & Responsive Desktop Grid */
 .wallet-shell {
   width: 100%;
   max-width: var(--max-mobile-wallet-width);
   margin: 0 auto;
   min-height: 100vh;
   background-color: var(--color-surface);
-  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .wallet-shell {
-    min-height: calc(100vh - 48px);
+    max-width: 960px;
     margin: var(--space-6) auto;
-    border-radius: var(--radius-2xl);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    min-height: auto;
   }
-}
 
-/* Header & Navigation Bar */
-.app-header {
-  height: 64px;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--space-5);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(8px);
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: var(--space-4);
+    align-items: start;
+    margin-bottom: var(--space-4);
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
 }
 
 .brand-logo {

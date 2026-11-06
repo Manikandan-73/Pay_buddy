@@ -10,11 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/reset.css">
-  <link rel="stylesheet" href="../css/animations.css">
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/variables.css?v=3.2">
+  <link rel="stylesheet" href="../css/reset.css?v=3.2">
+  <link rel="stylesheet" href="../css/animations.css?v=3.2">
+  <link rel="stylesheet" href="../css/global.css?v=3.2">
+  <link rel="stylesheet" href="../css/components.css?v=3.2">
   <style>
     .recipient-preview {
       display: none;
@@ -79,16 +79,18 @@
 
   <!-- Top App Navigation -->
   <header class="app-header">
-    <div class="flex items-center gap-2">
-      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 4px;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-      </a>
-      <span class="text-md font-bold text-primary">Send Money</span>
+    <div class="app-header-content">
+      <div class="flex items-center gap-2">
+        <a href="dashboard.html" class="btn btn-ghost btn-sm" style="padding: 4px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+        <span class="text-md font-bold text-primary">Send Money</span>
+      </div>
+      <span class="badge badge-success">UPI Rails</span>
     </div>
-    <span class="badge badge-success">UPI Rails</span>
   </header>
 
   <main class="wallet-shell page-enter">

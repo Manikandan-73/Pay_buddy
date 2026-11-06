@@ -10,12 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Core Design System -->
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/reset.css">
-  <link rel="stylesheet" href="../css/animations.css">
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/components.css">
+  <!-- Core Design System (with cache busting) -->
+  <link rel="stylesheet" href="../css/variables.css?v=3.2">
+  <link rel="stylesheet" href="../css/reset.css?v=3.2">
+  <link rel="stylesheet" href="../css/animations.css?v=3.2">
+  <link rel="stylesheet" href="../css/global.css?v=3.2">
+  <link rel="stylesheet" href="../css/components.css?v=3.2">
   <style>
     .greeting-section {
       margin-bottom: var(--space-4);
@@ -24,7 +24,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: var(--space-3);
-      margin: var(--space-4) 0;
     }
     .portfolio-mini-card {
       background: var(--color-surface);
@@ -58,46 +57,54 @@
 
   <!-- Top App Navigation -->
   <header class="app-header">
-    <div class="brand-logo">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <rect width="24" height="24" rx="7" fill="url(#dashBrandGrad)"/>
-        <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
-        <path d="M7 13H11V18H7V13Z" fill="white"/>
-        <defs>
-          <linearGradient id="dashBrandGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#381466"/>
-            <stop offset="0.6" stop-color="#5F259F"/>
-            <stop offset="1" stop-color="#8050C7"/>
-          </linearGradient>
-        </defs>
-      </svg>
-      PayBuddy
-      <span class="brand-badge"><span class="live-indicator-dot"></span> Live</span>
-    </div>
+    <div class="app-header-content">
+      <div class="flex items-center gap-4">
+        <a href="dashboard.html" class="brand-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="7" fill="url(#dashBrandGrad)"/>
+            <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
+            <path d="M7 13H11V18H7V13Z" fill="white"/>
+            <defs>
+              <linearGradient id="dashBrandGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#381466"/>
+                <stop offset="0.6" stop-color="#5F259F"/>
+                <stop offset="1" stop-color="#8050C7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          PayBuddy
+          <span class="brand-badge"><span class="live-indicator-dot"></span> Live</span>
+        </a>
 
-    <div class="flex items-center gap-2">
-      <!-- Admin / System Monitor Link -->
-      <a href="admin.html" class="btn btn-ghost btn-sm" title="System & Ledger Observability" style="font-size: 11px; padding: 4px 8px; color: var(--color-primary);">
-        ⚙️ Admin
-      </a>
+        <!-- Desktop Navigation Links -->
+        <nav class="desktop-nav-links">
+          <a href="dashboard.html" class="desktop-nav-link active">Dashboard</a>
+          <a href="send-money.html" class="desktop-nav-link">Send Money</a>
+          <a href="receive-money.html" class="desktop-nav-link">Receive</a>
+          <a href="transactions.html" class="desktop-nav-link">History</a>
+          <a href="admin.html" class="desktop-nav-link" style="color: var(--color-primary);">⚙️ Admin</a>
+        </nav>
+      </div>
 
-      <!-- Notification Bell -->
-      <button class="notification-bell-btn" id="btn-notifications" title="Notifications">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </svg>
-        <span class="notification-badge-dot"></span>
-      </button>
+      <div class="flex items-center gap-3">
+        <!-- Notification Bell -->
+        <button class="notification-bell-btn" id="btn-notifications" title="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge-dot"></span>
+        </button>
 
-      <!-- User Profile Avatar -->
-      <a href="profile.html" class="transaction-avatar" id="nav-avatar-btn" style="width: 36px; height: 36px; text-decoration: none;" title="Account Profile">
-        <span id="nav-user-initials">U</span>
-      </a>
+        <!-- User Profile Avatar -->
+        <a href="profile.html" class="transaction-avatar" id="nav-avatar-btn" style="width: 36px; height: 36px; text-decoration: none;" title="Account Profile">
+          <span id="nav-user-initials">U</span>
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- Mobile-First Main Application Shell -->
+  <!-- Responsive Main Shell (Adapts from Mobile Shell to Spacious Desktop Grid) -->
   <main class="wallet-shell page-enter">
     <div class="px-4 py-4 flex-1">
       
@@ -107,154 +114,185 @@
         <p class="text-xs text-secondary mt-1">Multi-currency digital wallet & instant UPI rails</p>
       </div>
 
-      <!-- Main Balance Card (Signature Deep Purple Gradient) -->
-      <div class="wallet-balance-card mb-4" id="main-balance-card">
-        <div class="flex justify-between items-center">
-          <div class="flex items-center gap-2">
-            <span class="wallet-balance-label">Primary INR Balance</span>
-            <span class="badge badge-success" style="background: rgba(0, 168, 132, 0.25); color: #82FFE5; font-size: 10px; padding: 2px 7px;">
-              ACTIVE
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <button id="btn-toggle-eye" class="btn-balance-eye" title="Hide/Show Balance">
-              <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
-            <button id="btn-refresh-balance" class="btn-balance-eye" title="Refresh Balance">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M23 4v6h-6"></path>
-                <path d="M1 20v-6h6"></path>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="wallet-balance-amount" id="wallet-balance-display">
-          <span class="wallet-balance-currency">₹</span> ...
-        </div>
-
-        <div class="flex justify-between items-center text-xs mt-2" style="opacity: 0.95;">
-          <span class="copy-id-pill" id="wallet-id-pill" title="Click to copy Wallet ID">
-            <span id="wallet-id-display" class="font-mono">ID: Loading...</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </span>
-          <span class="text-xs" style="color: rgba(255, 255, 255, 0.85);">Instant 0% Fee</span>
-        </div>
-      </div>
-
-      <!-- Quick Action Quad Grid (4 Prominent UPI Actions) -->
-      <div class="quick-actions-quad">
-        <a href="send-money.html" class="quick-action-item">
-          <div class="quick-action-bubble">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </div>
-          <span class="quick-action-text">Send</span>
-        </a>
-
-        <a href="receive-money.html" class="quick-action-item">
-          <div class="quick-action-bubble">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-          </div>
-          <span class="quick-action-text">Receive</span>
-        </a>
-
-        <a href="add-money.html" class="quick-action-item">
-          <div class="quick-action-bubble">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </div>
-          <span class="quick-action-text">Add Money</span>
-        </a>
-
-        <a href="transactions.html" class="quick-action-item">
-          <div class="quick-action-bubble">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="8" y1="6" x2="21" y2="6"></line>
-              <line x1="8" y1="12" x2="21" y2="12"></line>
-              <line x1="8" y1="18" x2="21" y2="18"></line>
-              <line x1="3" y1="6" x2="3.01" y2="6"></line>
-              <line x1="3" y1="12" x2="3.01" y2="12"></line>
-              <line x1="3" y1="18" x2="3.01" y2="18"></line>
-            </svg>
-          </div>
-          <span class="quick-action-text">History</span>
-        </a>
-      </div>
-
-      <!-- Quick Send People / Contacts Carousel (Google Pay Inspired) -->
-      <div class="mt-4 mb-2">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-xs font-semibold text-secondary uppercase tracking-wider">People & Quick Transfer</span>
-          <a href="send-money.html" class="text-2xs text-brand font-semibold" style="text-decoration: none;">New Payment +</a>
-        </div>
-        <div class="quick-contacts-carousel">
-          <a href="send-money.html?recipient=bob@paybuddy.local" class="quick-contact-col">
-            <div class="quick-contact-avatar">BS</div>
-            <span class="quick-contact-name">Bob Smith</span>
-          </a>
-          <a href="send-money.html?recipient=alice@paybuddy.local" class="quick-contact-col">
-            <div class="quick-contact-avatar" style="background: var(--color-secondary-light); color: var(--color-secondary);">AJ</div>
-            <span class="quick-contact-name">Alice J.</span>
-          </a>
-          <a href="send-money.html?recipient=charlie@paybuddy.local" class="quick-contact-col">
-            <div class="quick-contact-avatar" style="background: var(--color-success-light); color: var(--color-success);">CB</div>
-            <span class="quick-contact-name">Charlie</span>
-          </a>
-          <a href="send-money.html" class="quick-contact-col">
-            <div class="quick-contact-avatar" style="background: var(--color-surface-subtle); color: var(--color-primary); border: 2px dashed var(--color-border);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
+      <!-- Responsive 2-Column Dashboard Grid on Desktop -->
+      <div class="dashboard-grid">
+        
+        <!-- Left Main Column: Balance Card, Quick Quad & Contacts -->
+        <div>
+          <!-- Main Balance Card (Signature Deep Purple Gradient) -->
+          <div class="wallet-balance-card mb-4" id="main-balance-card">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <span class="wallet-balance-label">Primary INR Balance</span>
+                <span class="badge badge-success" style="background: rgba(0, 168, 132, 0.25); color: #82FFE5; font-size: 10px; padding: 2px 7px;">
+                  ACTIVE
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btn-toggle-eye" class="btn-balance-eye" title="Hide/Show Balance">
+                  <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button id="btn-refresh-balance" class="btn-balance-eye" title="Refresh Balance">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M23 4v6h-6"></path>
+                    <path d="M1 20v-6h6"></path>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
-            <span class="quick-contact-name">Search</span>
-          </a>
-        </div>
-      </div>
 
-      <!-- Wallet Portfolio Breakdown (MAIN + REWARD WALLETS) -->
-      <div class="flex justify-between items-center mt-3 mb-2">
-        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Your Wallets</span>
-        <span class="text-2xs text-brand font-medium">2 Active</span>
-      </div>
+            <div class="wallet-balance-amount" id="wallet-balance-display">
+              <span class="wallet-balance-currency">₹</span> ...
+            </div>
 
-      <div class="wallet-portfolio-carousel">
-        <div class="portfolio-mini-card">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-2xs font-semibold text-muted">PRIMARY</span>
-            <span class="badge badge-success" style="padding: 1px 6px; font-size: 9px;">INR</span>
+            <div class="flex justify-between items-center text-xs mt-2" style="opacity: 0.95;">
+              <span class="copy-id-pill" id="wallet-id-pill" title="Click to copy Wallet ID">
+                <span id="wallet-id-display" class="font-mono">ID: Loading...</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </span>
+              <span class="text-xs" style="color: rgba(255, 255, 255, 0.85);">Instant 0% Fee</span>
+            </div>
           </div>
-          <div class="text-md font-bold text-primary tabular-nums" id="portfolio-main-balance">₹ ...</div>
-          <div class="text-2xs text-secondary mt-1">UPI & Transfers</div>
+
+          <!-- Quick Action Quad Grid (4 Prominent UPI Actions) -->
+          <div class="quick-actions-quad">
+            <a href="send-money.html" class="quick-action-item">
+              <div class="quick-action-bubble">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </div>
+              <span class="quick-action-text">Send</span>
+            </a>
+
+            <a href="receive-money.html" class="quick-action-item">
+              <div class="quick-action-bubble">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </div>
+              <span class="quick-action-text">Receive</span>
+            </a>
+
+            <a href="add-money.html" class="quick-action-item">
+              <div class="quick-action-bubble">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </div>
+              <span class="quick-action-text">Add Money</span>
+            </a>
+
+            <a href="transactions.html" class="quick-action-item">
+              <div class="quick-action-bubble">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </div>
+              <span class="quick-action-text">History</span>
+            </a>
+          </div>
+
+          <!-- Quick Send People / Contacts Carousel (Google Pay Inspired) -->
+          <div class="card mb-4" style="background: var(--color-surface);">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-semibold text-secondary uppercase tracking-wider">People & Quick Transfer</span>
+              <a href="send-money.html" class="text-2xs text-brand font-semibold" style="text-decoration: none;">New Payment +</a>
+            </div>
+            <div class="quick-contacts-carousel">
+              <a href="send-money.html?recipient=bob@paybuddy.local" class="quick-contact-col">
+                <div class="quick-contact-avatar">BS</div>
+                <span class="quick-contact-name">Bob Smith</span>
+              </a>
+              <a href="send-money.html?recipient=alice@paybuddy.local" class="quick-contact-col">
+                <div class="quick-contact-avatar" style="background: var(--color-secondary-light); color: var(--color-secondary);">AJ</div>
+                <span class="quick-contact-name">Alice J.</span>
+              </a>
+              <a href="send-money.html?recipient=charlie@paybuddy.local" class="quick-contact-col">
+                <div class="quick-contact-avatar" style="background: var(--color-success-light); color: var(--color-success);">CB</div>
+                <span class="quick-contact-name">Charlie</span>
+              </a>
+              <a href="send-money.html" class="quick-contact-col">
+                <div class="quick-contact-avatar" style="background: var(--color-surface-subtle); color: var(--color-primary); border: 2px dashed var(--color-border);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </div>
+                <span class="quick-contact-name">Search</span>
+              </a>
+            </div>
+          </div>
         </div>
 
-        <div class="portfolio-mini-card">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-2xs font-semibold text-muted">REWARDS</span>
-            <span class="badge badge-warning" style="padding: 1px 6px; font-size: 9px;">POINTS</span>
+        <!-- Right Side Column: Multi-Wallet Breakdown & Security Card -->
+        <div>
+          <!-- Wallet Portfolio Breakdown (MAIN + REWARD WALLETS) -->
+          <div class="card mb-4">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Your Wallets</span>
+              <span class="text-2xs text-brand font-medium">2 Active</span>
+            </div>
+
+            <div class="wallet-portfolio-carousel">
+              <div class="portfolio-mini-card">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-2xs font-semibold text-muted">PRIMARY</span>
+                  <span class="badge badge-success" style="padding: 1px 6px; font-size: 9px;">INR</span>
+                </div>
+                <div class="text-md font-bold text-primary tabular-nums" id="portfolio-main-balance">₹ ...</div>
+                <div class="text-2xs text-secondary mt-1">UPI & Transfers</div>
+              </div>
+
+              <div class="portfolio-mini-card">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-2xs font-semibold text-muted">REWARDS</span>
+                  <span class="badge badge-warning" style="padding: 1px 6px; font-size: 9px;">POINTS</span>
+                </div>
+                <div class="text-md font-bold text-primary tabular-nums" id="portfolio-reward-balance">₹ 150.00</div>
+                <div class="text-2xs text-secondary mt-1">Cashback Wallet</div>
+              </div>
+            </div>
           </div>
-          <div class="text-md font-bold text-primary tabular-nums" id="portfolio-reward-balance">₹ 150.00</div>
-          <div class="text-2xs text-secondary mt-1">Cashback Wallet</div>
+
+          <!-- Architecture Invariants Card -->
+          <div class="card mb-4" style="background: var(--color-surface-subtle);">
+            <span class="text-2xs font-bold text-muted uppercase tracking-wider">FINTECH ARCHITECTURE</span>
+            <div class="flex flex-col gap-2 mt-2 text-2xs text-secondary">
+              <div class="flex items-center justify-between">
+                <span>🛡️ Double-Entry Ledger:</span>
+                <span class="text-success font-semibold">Active</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>🔒 InnoDB Row Locks:</span>
+                <span class="text-success font-semibold">Deadlock-Free</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>⚡ Network Guard:</span>
+                <span class="text-success font-semibold">SHA-256 Idempotency</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Recent Transactions Section -->
-      <div class="card mt-4">
+      <!-- Recent Transactions Section (Full Width across Dashboard Grid) -->
+      <div class="card mt-2">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-sm font-semibold text-primary">Recent Activity</h2>
           <a href="transactions.html" class="text-xs font-semibold text-brand" style="text-decoration: none;">View All →</a>
@@ -274,7 +312,7 @@
       </div>
     </div>
 
-    <!-- Elevated Bottom Navigation Bar -->
+    <!-- Elevated Bottom Navigation Bar (Visible on Mobile Only) -->
     <nav class="bottom-nav">
       <a href="dashboard.html" class="bottom-nav-item active">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -308,8 +346,8 @@
     </nav>
   </main>
 
-  <!-- Notifications Drawer Sheet -->
-  <div class="drawer-backdrop" id="notifications-drawer">
+  <!-- Notifications Drawer Sheet (Explicitly hidden by default via inline style and class) -->
+  <div class="drawer-backdrop" id="notifications-drawer" style="display: none !important;">
     <div class="drawer-sheet">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-md font-bold text-primary">System Notifications</h3>
@@ -342,6 +380,6 @@
     </div>
   </div>
 
-  <script type="module" src="../js/dashboard.js"></script>
+  <script type="module" src="../js/dashboard.js?v=3.2"></script>
 </body>
 </html>

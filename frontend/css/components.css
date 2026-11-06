@@ -552,20 +552,25 @@
 }
 
 .drawer-backdrop {
-  display: none;
+  display: none !important;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(32, 27, 45, 0.45);
   backdrop-filter: blur(4px);
   z-index: 450;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
+  padding: var(--space-4);
+}
+
+.drawer-backdrop.active,
+.drawer-backdrop[style*="display: flex"] {
+  display: flex !important;
 }
 
 .drawer-sheet {
   background: var(--color-surface);
-  border-top-left-radius: var(--radius-2xl);
-  border-top-right-radius: var(--radius-2xl);
+  border-radius: var(--radius-2xl);
   width: 100%;
   max-width: var(--max-mobile-wallet-width);
   padding: var(--space-6) var(--space-5);
@@ -590,10 +595,12 @@
    ========================================================================== */
 
 .quick-contacts-carousel {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
   gap: var(--space-4);
   overflow-x: auto;
-  padding: var(--space-2) 0 var(--space-4);
+  padding: var(--space-2) 0 var(--space-3);
   scrollbar-width: none;
 }
 
@@ -602,9 +609,9 @@
 }
 
 .quick-contact-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
   gap: var(--space-1);
   text-decoration: none;
   flex-shrink: 0;

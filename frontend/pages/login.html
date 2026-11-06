@@ -10,11 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/reset.css">
-  <link rel="stylesheet" href="../css/animations.css">
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/variables.css?v=3.2">
+  <link rel="stylesheet" href="../css/reset.css?v=3.2">
+  <link rel="stylesheet" href="../css/animations.css?v=3.2">
+  <link rel="stylesheet" href="../css/global.css?v=3.2">
+  <link rel="stylesheet" href="../css/components.css?v=3.2">
   <style>
     .auth-container {
       max-width: 420px;
@@ -36,22 +36,24 @@
 
   <!-- Top App Navigation -->
   <header class="app-header">
-    <a href="../index.html" class="brand-logo">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <rect width="24" height="24" rx="7" fill="url(#loginBrandGrad)"/>
-        <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
-        <path d="M7 13H11V18H7V13Z" fill="white"/>
-        <defs>
-          <linearGradient id="loginBrandGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#381466"/>
-            <stop offset="0.6" stop-color="#5F259F"/>
-            <stop offset="1" stop-color="#8050C7"/>
-          </linearGradient>
-        </defs>
-      </svg>
-      PayBuddy
-    </a>
-    <a href="register.html" class="btn btn-ghost btn-sm">Create Account</a>
+    <div class="app-header-content">
+      <a href="../index.html" class="brand-logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <rect width="24" height="24" rx="7" fill="url(#loginBrandGrad)"/>
+          <path d="M7 6H13.5C15.433 6 17 7.567 17 9.5C17 11.433 15.433 13 13.5 13H7V6Z" fill="white"/>
+          <path d="M7 13H11V18H7V13Z" fill="white"/>
+          <defs>
+            <linearGradient id="loginBrandGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#381466"/>
+              <stop offset="0.6" stop-color="#5F259F"/>
+              <stop offset="1" stop-color="#8050C7"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        PayBuddy
+      </a>
+      <a href="register.html" class="btn btn-ghost btn-sm">Create Account</a>
+    </div>
   </header>
 
   <main class="app-container page-enter">

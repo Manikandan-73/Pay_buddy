@@ -81,16 +81,16 @@ walletIdPill?.addEventListener('click', () => {
 
 // Notifications Drawer Listeners
 btnNotifications?.addEventListener('click', () => {
-  notificationsDrawer.style.display = 'flex';
+  notificationsDrawer.style.setProperty('display', 'flex', 'important');
 });
 
 btnCloseNotifications?.addEventListener('click', () => {
-  notificationsDrawer.style.display = 'none';
+  notificationsDrawer.style.setProperty('display', 'none', 'important');
 });
 
 notificationsDrawer?.addEventListener('click', (e) => {
   if (e.target === notificationsDrawer) {
-    notificationsDrawer.style.display = 'none';
+    notificationsDrawer.style.setProperty('display', 'none', 'important');
   }
 });
 
